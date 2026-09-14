@@ -4,8 +4,8 @@
 // L'URL et la clé "anon" sont publiques par conception : elles sont protégées
 // par les règles RLS (Row Level Security) côté Supabase, pas par le secret.
 // Ne jamais mettre la clé "service_role" ici, elle donne un accès total à la base.
-const SUPABASE_URL = '';
-const SUPABASE_ANON_KEY = '';
+const SUPABASE_URL = 'https://fwwukwkouzwqwiivnmgz.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_vDYl19tQivPVZxCVxzE_gw_bqzNUnsf';
 
 const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
