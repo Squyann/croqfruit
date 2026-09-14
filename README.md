@@ -6,11 +6,15 @@ Site de livraison de fruits et légumes CroqFruit — un primeur qui achète ses
 
 - `index.html` — page d'accueil
 - `boutique.html` — boutique en ligne (catalogue + panier)
+- `compte.html` — connexion / inscription / tableau de bord client
 - `css/style.css` — styles partagés (couleurs, typographie, en-tête, pied de page)
 - `css/boutique.css` — styles propres à la boutique (grille produits, panier)
+- `css/compte.css` — styles propres au compte (formulaires, tableau de bord)
 - `js/supabase-client.js` — connexion à Supabase et récupération des produits
 - `js/cart.js` — panier client (persisté dans le navigateur)
 - `js/boutique.js` — logique de la page boutique (filtres, grille, panier)
+- `js/auth.js` — état de connexion partagé (utilisé sur toutes les pages)
+- `js/compte.js` — logique de la page compte (formulaires, tableau de bord)
 
 Aucun produit n'est codé en dur : la boutique affiche uniquement ce qui est présent dans la base Supabase.
 
@@ -40,4 +44,19 @@ La boutique a besoin d'un projet Supabase pour afficher des produits :
 
 La clé anon est protégée par les règles RLS (Row Level Security) de Supabase — la lecture de `products` doit être autorisée en public en lecture seule.
 
-Les comptes clients et les commandes viendront dans une prochaine étape, une fois le projet Supabase partagé.
+## Comptes clients
+
+L'authentification utilise Supabase Auth (email + mot de passe). À chaque inscription, une ligne est créée automatiquement dans la table `profiles` :
+
+| colonne     | type      | description                                  |
+|-------------|-----------|-----------------------------------------------|
+| `id`        | uuid      | clé primaire, référence `auth.users`          |
+| `full_name` | text      | nom renseigné à l'inscription                 |
+| `role`      | text      | `customer` par défaut, `admin` pour la gestion |
+| `created_at`| timestamptz | date de création                            |
+
+Un client ne peut lire que sa propre ligne (RLS). Personne ne peut écrire directement dans `profiles` depuis le site : c'est un trigger côté base de données qui crée la ligne à l'inscription — ça évite qu'un client puisse s'attribuer lui-même le rôle `admin`. Pour créer le premier compte admin, passer `role` à `'admin'` directement en base (SQL), une fois qu'un compte existe.
+
+Si le projet Supabase exige la confirmation par email (réglage par défaut), pensez à renseigner l'URL de redirection dans **Authentication > URL Configuration** une fois le site déployé, pour que le lien reçu par email ramène vers `compte.html`.
+
+Les commandes viendront dans une prochaine étape.

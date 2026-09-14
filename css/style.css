@@ -112,10 +112,17 @@ header{
 .nav-links a:hover::after, .nav-links a[aria-current="page"]::after{ transform: scaleX(1); }
 .nav-links a[aria-current="page"]{ color: var(--red); }
 .nav-side{ display: flex; align-items: center; gap: 1rem; }
-.nav-cta{ display:none; }
-@media (min-width: 720px){ .nav-cta{ display:inline-flex; } }
+.btn.nav-cta{ display:none; }
+@media (min-width: 720px){ .btn.nav-cta{ display:inline-flex; } }
 @media (max-width: 719px){ .nav-links{ gap: 1rem; font-size: 0.85rem; } }
 @media (max-width: 560px){ .nav-links{ display:none; } }
+
+.account-link{
+  font-family: var(--font-utility); font-weight: 600; font-size: 0.88rem;
+  text-decoration: none; color: var(--ink);
+  white-space: nowrap;
+}
+.account-link:hover{ color: var(--red); }
 
 .cart-btn{
   position: relative;

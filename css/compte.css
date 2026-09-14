@@ -1,0 +1,46 @@
+.account-section{ padding-block: clamp(2.5rem, 6vw, 4rem); }
+.account-shell{ max-width: 30rem; }
+.account-shell > p{ color: var(--ink-soft); margin: 0.9rem 0 0; }
+
+.auth-tabs{ display: flex; gap: 0.5rem; margin: 1.75rem 0 1.5rem; border-bottom: 1px solid var(--line); }
+.auth-tab{
+  font-family: var(--font-utility); font-weight: 600; font-size: 0.95rem;
+  padding: 0.7em 0.2em; margin-bottom: -1px;
+  border: none; border-bottom: 2px solid transparent;
+  background: transparent; color: var(--ink-soft);
+  cursor: pointer;
+}
+.auth-tab.is-active{ color: var(--red); border-bottom-color: var(--red); }
+
+.auth-form{ display: flex; flex-direction: column; gap: 1.1rem; }
+.auth-form[hidden]{ display: none; }
+.auth-form label{
+  display: flex; flex-direction: column; gap: 0.4rem;
+  font-family: var(--font-utility); font-weight: 600; font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.auth-form input{
+  font-family: var(--font-body); font-size: 1rem; color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: 3px;
+  padding: 0.7em 0.8em;
+}
+.auth-form input:focus-visible{ border-color: var(--red); }
+.auth-form .btn{ align-self: flex-start; }
+
+.auth-error{
+  font-family: var(--font-utility); font-size: 0.85rem; font-weight: 600;
+  color: var(--red); margin: 0;
+}
+.auth-success{
+  font-family: var(--font-utility); font-size: 0.85rem;
+  color: var(--leaf); margin: 0;
+}
+
+.account-dashboard .account-email{ color: var(--ink-soft); font-family: var(--font-utility); margin: 0.3rem 0 0; }
+.account-dashboard .account-note{
+  margin: 1.75rem 0; padding: 1rem 1.2rem;
+  background: var(--paper-deep); border: 1px solid var(--line);
+  color: var(--ink-soft); font-size: 0.92rem;
+}
