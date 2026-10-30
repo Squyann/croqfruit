@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr" data-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiche produit — Administration CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<script src="../js/layout.js"></script>
+</head>
+<body>
+
+<site-header variant="admin"></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="admin" active="produits"></dash-nav>
+
+  <div class="dash-main">
+    <ol class="crumbs"><li><a href="produits.html">Produits</a></li><li>Fiche produit</li></ol>
+
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Ajouter un produit</h1>
+        <p>Ces informations s'affichent dans la boutique.</p>
+      </div>
+    </div>
+
+    <p class="callout"><strong>Maquette.</strong> L'enregistrement sera branché sur la table <code>products</code> de la base de données.</p>
+
+    <form class="form panel" style="max-width:40rem">
+      <label class="field">Nom du produit
+        <input type="text" name="name" required>
+      </label>
+      <label class="field">Description <small>(facultatif)</small>
+        <textarea name="description"></textarea>
+      </label>
+      <div class="field-row">
+        <label class="field">Prix (€, TTC)
+          <input type="number" name="price" min="0" step="0.01" required>
+        </label>
+        <label class="field">Unité de vente
+          <input type="text" name="unit" list="units" value="kg" required>
+          <datalist id="units">
+            <option value="kg">
+            <option value="pièce">
+            <option value="botte">
+            <option value="barquette">
+          </datalist>
+        </label>
+      </div>
+      <label class="field">Catégorie <small>(sert aux filtres de la boutique)</small>
+        <input type="text" name="category" placeholder="Fruits, Légumes…">
+      </label>
+      <label class="field">Photo (URL) <small>(facultatif — l'envoi d'image viendra plus tard)</small>
+        <input type="url" name="image_url" placeholder="https://…">
+      </label>
+      <label class="check">
+        <input type="checkbox" name="in_stock" checked>
+        <span>Visible et disponible dans la boutique</span>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" disabled>Enregistrer</button>
+        <a class="btn btn-ghost" href="produits.html">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

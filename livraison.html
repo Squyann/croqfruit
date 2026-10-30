@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr" data-root="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Livraison — CroqFruit</title>
+<meta name="description" content="Zones, jours, créneaux et frais de livraison de vos fruits et légumes CroqFruit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/layout.js"></script>
+</head>
+<body>
+
+<site-header active="livraison"></site-header>
+
+<main>
+  <section class="page-intro">
+    <div class="wrap">
+      <span class="eyebrow">Livraison</span>
+      <h1>Livrés chez vous</h1>
+      <p class="lede">Zones desservies, jours de tournée, créneaux et frais : tout ce qu'il faut savoir pour recevoir vos fruits et légumes.</p>
+    </div>
+  </section>
+
+  <div class="wrap page-body stack">
+
+    <p class="callout"><strong>À compléter avec votre primeur.</strong> Les informations pratiques surlignées ci-dessous dépendent de son organisation : elles ne sont volontairement pas pré-remplies.</p>
+
+    <section>
+      <h2 class="section-title">Les informations pratiques</h2>
+      <dl class="info-list">
+        <div class="info-row"><dt>Zones desservies</dt><dd><mark class="todo">[Villes ou codes postaux livrés]</mark></dd></div>
+        <div class="info-row"><dt>Jours de livraison</dt><dd><mark class="todo">[Jours de la semaine]</mark></dd></div>
+        <div class="info-row"><dt>Créneaux</dt><dd><mark class="todo">[Plages horaires proposées]</mark></dd></div>
+        <div class="info-row"><dt>Commande avant</dt><dd><mark class="todo">[Heure limite pour être livré le jour souhaité]</mark></dd></div>
+        <div class="info-row"><dt>Frais de livraison</dt><dd><mark class="todo">[Tarif, éventuel seuil de gratuité]</mark></dd></div>
+        <div class="info-row"><dt>Commande minimum</dt><dd><mark class="todo">[Montant, le cas échéant]</mark></dd></div>
+      </dl>
+    </section>
+
+    <section class="split">
+      <div class="prose">
+        <h2 style="margin-top:0">Comment se passe la livraison</h2>
+        <ol>
+          <li>Vous créez votre compte, remplissez votre panier et validez votre commande en choisissant votre adresse et votre créneau.</li>
+          <li>Votre primeur prépare la commande à la main, à partir de ses achats auprès de producteurs.</li>
+          <li>La commande vous est livrée à l'adresse indiquée, à l'intérieur du créneau choisi.</li>
+        </ol>
+
+        <h2>À la réception</h2>
+        <p>Vérifiez l'état de vos produits en présence du livreur lorsque c'est possible. Si un produit est abîmé ou manquant, contactez-nous rapidement : les conditions de réclamation figurent dans les <a href="cgv.html">conditions générales de vente</a>.</p>
+        <p>Les fruits et légumes sont des produits frais : pensez à les ranger rapidement et à les conserver selon leur nature.</p>
+
+        <h2>En cas d'absence</h2>
+        <p><mark class="todo">[Précisez ce qui se passe si le client est absent : nouvelle tentative, dépose, remboursement…]</mark></p>
+      </div>
+
+      <aside class="card">
+        <h2>Livrez-vous chez moi ?</h2>
+        <p>Saisissez votre code postal pour vérifier que votre adresse est desservie.</p>
+        <form class="form" style="margin-top:1rem">
+          <label class="field">Code postal
+            <input type="text" name="postalCode" inputmode="numeric" autocomplete="postal-code" maxlength="5" disabled>
+          </label>
+          <button type="submit" class="btn btn-primary" disabled>Vérifier</button>
+          <p class="msg">Cette vérification sera disponible prochainement.</p>
+        </form>
+      </aside>
+    </section>
+
+  </div>
+</main>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,62 +1,69 @@
 # CroqFruit
 
-Site de livraison de fruits et légumes CroqFruit — un primeur qui achète ses produits auprès de producteurs et les livre directement chez les particuliers.
-
-## Contenu
-
-- `index.html` — page d'accueil
-- `boutique.html` — boutique en ligne (catalogue + panier)
-- `compte.html` — connexion / inscription / tableau de bord client
-- `css/style.css` — styles partagés (couleurs, typographie, en-tête, pied de page)
-- `css/boutique.css` — styles propres à la boutique (grille produits, panier)
-- `css/compte.css` — styles propres au compte (formulaires, tableau de bord)
-- `js/supabase-client.js` — connexion à Supabase et récupération des produits
-- `js/cart.js` — panier client (persisté dans le navigateur)
-- `js/boutique.js` — logique de la page boutique (filtres, grille, panier)
-- `js/auth.js` — état de connexion partagé (utilisé sur toutes les pages)
-- `js/compte.js` — logique de la page compte (formulaires, tableau de bord)
-
-Aucun produit n'est codé en dur : la boutique affiche uniquement ce qui est présent dans la base Supabase.
+Site de livraison de fruits et légumes : un primeur qui achète ses produits auprès de producteurs et les livre chez des particuliers. Site statique (HTML / CSS / JavaScript, aucun outil de build), avec Supabase pour les produits, les comptes et — bientôt — les commandes.
 
 ## Aperçu local
 
-Ouvrez `index.html` ou `boutique.html` dans un navigateur (aucun serveur ni build requis).
+Ouvrir une page dans un navigateur, ou lancer un petit serveur depuis ce dossier :
 
-## Connecter Supabase
+```bash
+python -m http.server 5173
+```
 
-La boutique a besoin d'un projet Supabase pour afficher des produits :
+## Pages
 
-1. Dans le tableau de bord Supabase du projet : **Project Settings > API**.
-2. Copier l'**URL du projet** et la clé **anon / public** (jamais la clé `service_role`, qui reste secrète).
-3. Renseigner ces deux valeurs dans `js/supabase-client.js` (`SUPABASE_URL` et `SUPABASE_ANON_KEY`).
-4. Créer une table `products` avec au minimum les colonnes :
+| Zone | Pages | État |
+|---|---|---|
+| Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés |
+| Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier fonctionnel ; fiche produit, commande et confirmation = maquettes |
+| Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
+| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; contenus = maquettes |
+| Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
+| Administration | `admin/index.html`, `commandes.html`, `commande.html`, `produits.html`, `produit-edition.html`, `clients.html`, `livraisons.html` | maquettes, **pas encore protégées** |
 
-   | colonne       | type      | description                          |
-   |---------------|-----------|---------------------------------------|
-   | `id`          | uuid      | clé primaire                          |
-   | `name`        | text      | nom du produit                        |
-   | `description` | text      | description courte (facultatif)       |
-   | `price`       | numeric   | prix en euros                         |
-   | `unit`        | text      | unité de vente (`kg`, `pièce`, `botte`...) |
-   | `category`    | text      | catégorie (facultatif, sert aux filtres) |
-   | `image_url`   | text      | URL de la photo (facultatif)          |
-   | `in_stock`    | boolean   | visible dans la boutique              |
+Les maquettes affichent un encadré « Maquette » et leurs boutons sont désactivés tant que la fonctionnalité n'existe pas.
 
-La clé anon est protégée par les règles RLS (Row Level Security) de Supabase — la lecture de `products` doit être autorisée en public en lecture seule.
+## Structure
 
-## Comptes clients
+```
+css/style.css       styles communs (couleurs, typo, en-tête, formulaires, tableaux, pages légales…)
+css/home.css        accueil uniquement
+css/boutique.css    boutique, fiche produit, tiroir panier
+css/dashboard.css   espace client et administration
+js/layout.js        en-tête, pied de page et menus (balises <site-header>, <site-footer>, <dash-nav>)
+js/supabase-client.js   connexion Supabase + lecture des produits
+js/auth.js          état de connexion partagé, déconnexion, messages d'erreur
+js/cart.js          panier (stocké dans le navigateur)
+js/utils.js         échappement HTML, pastille produit
+js/boutique.js, panier.js, commande.js, connexion.js, inscription.js, compte.js   logique par page
+```
 
-L'authentification utilise Supabase Auth (email + mot de passe). À chaque inscription, une ligne est créée automatiquement dans la table `profiles` :
+### Modifier l'en-tête, le pied de page ou la navigation
 
-| colonne     | type      | description                                  |
-|-------------|-----------|-----------------------------------------------|
-| `id`        | uuid      | clé primaire, référence `auth.users`          |
-| `full_name` | text      | nom renseigné à l'inscription                 |
-| `role`      | text      | `customer` par défaut, `admin` pour la gestion |
-| `created_at`| timestamptz | date de création                            |
+Tout est dans `js/layout.js` : une seule modification s'applique à toutes les pages. Les pages dans `admin/` déclarent `<html data-root="../">` pour que les liens restent valides. Toujours écrire la balise fermante (`<site-header ...></site-header>`).
 
-Un client ne peut lire que sa propre ligne (RLS). Personne ne peut écrire directement dans `profiles` depuis le site : c'est un trigger côté base de données qui crée la ligne à l'inscription — ça évite qu'un client puisse s'attribuer lui-même le rôle `admin`. Pour créer le premier compte admin, passer `role` à `'admin'` directement en base (SQL), une fois qu'un compte existe.
+### Coordonnées du commerçant
 
-Si le projet Supabase exige la confirmation par email (réglage par défaut), pensez à renseigner l'URL de redirection dans **Authentication > URL Configuration** une fois le site déployé, pour que le lien reçu par email ramène vers `compte.html`.
+L'objet `SITE` en haut de `js/layout.js` (email, téléphone, Instagram) alimente le pied de page. **Rien n'est affiché tant qu'une valeur est vide** : aucune coordonnée n'est inventée.
 
-Les commandes viendront dans une prochaine étape.
+### Textes à compléter
+
+Les champs surlignés (`<mark class="todo">`) sont à remplir avec les vraies informations de l'entreprise : raison sociale, SIRET, médiateur, zones et frais de livraison, moyens de paiement, etc. Pour les retrouver : chercher `class="todo"` dans le projet.
+
+## Supabase
+
+Projet : **CroqFruit** (région UE, Irlande). L'URL et la clé publique (`sb_publishable_…`) sont dans `js/supabase-client.js` — elles sont publiques par conception, la sécurité repose sur les règles RLS. Ne jamais mettre une clé `service_role` / `sb_secret_…` dans le code du site.
+
+Tables actuelles :
+
+- `products` — `id`, `name`, `description`, `price`, `unit`, `category`, `image_url`, `in_stock`. Lecture publique seule ; aucun produit n'est codé en dur dans le site.
+- `profiles` — `id` (réf. `auth.users`), `full_name`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne peut lire que sa propre ligne.
+
+Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
+
+À prévoir : commandes, adresses, zones et créneaux de livraison, messages de contact, protection de l'administration par le rôle `admin`.
+
+Remarques :
+
+- Un projet Supabase gratuit se met en pause après une période d'inactivité ; il faut alors le réveiller depuis le tableau de bord (ou passer à une offre payante pour un site en production).
+- Les emails de confirmation d'inscription sont soumis à une limite d'envoi sur l'offre gratuite ; un service d'envoi dédié (SMTP) lève cette limite.

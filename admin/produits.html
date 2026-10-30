@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr" data-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Produits — Administration CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<script src="../js/layout.js"></script>
+</head>
+<body>
+
+<site-header variant="admin"></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="admin" active="produits"></dash-nav>
+
+  <div class="dash-main">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Produits</h1>
+        <p>Les produits affichés dans la boutique.</p>
+      </div>
+      <a class="btn btn-primary" href="produit-edition.html">Ajouter un produit</a>
+    </div>
+
+    <p class="callout"><strong>Maquette.</strong> La liste sera alimentée par la base de données (table <code>products</code>) ; les produits se gèrent ici, jamais dans le code du site.</p>
+
+    <form class="toolbar" aria-label="Filtrer les produits">
+      <div class="toolbar-filters">
+        <label class="field">Recherche
+          <input type="search" name="q" placeholder="Nom du produit" disabled>
+        </label>
+        <label class="field">Catégorie
+          <select name="category" disabled><option>Toutes</option></select>
+        </label>
+        <label class="field">Disponibilité
+          <select name="stock" disabled>
+            <option>Tous</option>
+            <option>En stock</option>
+            <option>Hors stock</option>
+          </select>
+        </label>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table class="data">
+        <thead>
+          <tr><th>Photo</th><th>Nom</th><th>Catégorie</th><th class="num">Prix</th><th>Unité</th><th>Boutique</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="empty" colspan="7">Aucun produit pour le moment. <a href="produit-edition.html">Ajouter le premier produit</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

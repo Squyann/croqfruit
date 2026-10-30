@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr" data-root="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commande confirmée — CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/layout.js"></script>
+</head>
+<body>
+
+<site-header active=""></site-header>
+
+<main class="auth-page">
+  <div class="wrap">
+    <div class="auth-card" style="max-width:36rem">
+      <div>
+        <span class="eyebrow">Commande</span>
+        <h1>Merci pour votre commande</h1>
+        <p class="lede">Votre commande n° <strong>—</strong> a bien été enregistrée. Votre primeur la prépare pour la livraison.</p>
+      </div>
+
+      <dl class="info-list">
+        <div class="info-row"><dt>Livraison prévue</dt><dd>—</dd></div>
+        <div class="info-row"><dt>Adresse</dt><dd>—</dd></div>
+        <div class="info-row"><dt>Total</dt><dd>—</dd></div>
+      </dl>
+
+      <p class="callout"><strong>Maquette.</strong> Cette page affichera le récapitulatif réel une fois la commande en ligne activée.</p>
+
+      <div class="form-actions">
+        <a class="btn btn-primary" href="compte-commandes.html">Suivre mes commandes</a>
+        <a class="btn btn-ghost" href="boutique.html">Retour à la boutique</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

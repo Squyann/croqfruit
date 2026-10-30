@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr" data-root="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Créer un compte — CroqFruit</title>
+<meta name="description" content="Créez votre compte CroqFruit pour passer commande auprès de votre primeur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/layout.js"></script>
+</head>
+<body>
+
+<site-header active=""></site-header>
+
+<main class="auth-page">
+  <div class="wrap">
+    <div class="auth-card">
+      <div>
+        <span class="eyebrow">Compte</span>
+        <h1>Créer un compte</h1>
+        <p class="lede">Un compte est nécessaire pour valider une commande. Vous pouvez parcourir la boutique et remplir votre panier sans compte.</p>
+      </div>
+
+      <form id="signup-form" class="form">
+        <label class="field">Nom complet
+          <input type="text" name="fullName" required autocomplete="name">
+        </label>
+        <label class="field">Email
+          <input type="email" name="email" required autocomplete="email">
+        </label>
+        <label class="field">Mot de passe
+          <input type="password" name="password" required autocomplete="new-password" minlength="8">
+          <small>8 caractères minimum.</small>
+        </label>
+        <label class="field">Confirmer le mot de passe
+          <input type="password" name="confirmPassword" required autocomplete="new-password" minlength="8">
+        </label>
+        <label class="check">
+          <input type="checkbox" name="terms" required>
+          <span>J'ai lu et j'accepte les <a href="cgv.html">conditions générales de vente</a> et la <a href="politique-confidentialite.html">politique de confidentialité</a>.</span>
+        </label>
+        <p class="msg msg-error" data-error hidden></p>
+        <p class="msg msg-ok" data-success hidden></p>
+        <button type="submit" class="btn btn-primary btn-block">Créer mon compte</button>
+      </form>
+
+      <p class="auth-alt">Déjà un compte ? <a href="connexion.html">Se connecter</a></p>
+    </div>
+  </div>
+</main>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/inscription.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr" data-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Livraisons — Administration CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<script src="../js/layout.js"></script>
+</head>
+<body>
+
+<site-header variant="admin"></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="admin" active="livraisons"></dash-nav>
+
+  <div class="dash-main">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Livraisons</h1>
+        <p>Zones desservies, créneaux et tournées à venir.</p>
+      </div>
+    </div>
+
+    <p class="callout"><strong>Maquette.</strong> Les zones et créneaux saisis ici alimenteront la page « Livraison » et le choix du créneau à la commande.</p>
+
+    <section class="panel">
+      <h2>Livraisons à venir</h2>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th>Jour</th><th>Créneau</th><th>Client</th><th>Adresse</th><th>Statut</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="empty" colspan="5">Aucune livraison planifiée.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Zones de livraison</h2>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th>Zone</th><th>Codes postaux</th><th class="num">Frais</th><th class="num">Minimum de commande</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="empty" colspan="5">Aucune zone définie.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <form class="form" style="margin-top:1.25rem">
+        <div class="field-row">
+          <label class="field">Nom de la zone
+            <input type="text" name="zone" disabled>
+          </label>
+          <label class="field">Codes postaux
+            <input type="text" name="postalCodes" placeholder="Séparés par des virgules" disabled>
+          </label>
+        </div>
+        <div class="field-row">
+          <label class="field">Frais de livraison (€)
+            <input type="number" name="fee" min="0" step="0.01" disabled>
+          </label>
+          <label class="field">Minimum de commande (€)
+            <input type="number" name="minimum" min="0" step="0.01" disabled>
+          </label>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Ajouter la zone</button></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Créneaux de livraison</h2>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th>Jour</th><th>Plage horaire</th><th class="num">Capacité</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="empty" colspan="4">Aucun créneau défini.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <form class="form" style="margin-top:1.25rem">
+        <div class="field-row">
+          <label class="field">Jour
+            <select name="weekday" disabled>
+              <option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option><option>Samedi</option><option>Dimanche</option>
+            </select>
+          </label>
+          <label class="field">Début
+            <input type="time" name="start" disabled>
+          </label>
+          <label class="field">Fin
+            <input type="time" name="end" disabled>
+          </label>
+          <label class="field">Capacité (commandes)
+            <input type="number" name="capacity" min="1" disabled>
+          </label>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Ajouter le créneau</button></div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

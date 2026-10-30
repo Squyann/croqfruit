@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr" data-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commandes — Administration CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<script src="../js/layout.js"></script>
+</head>
+<body>
+
+<site-header variant="admin"></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="admin" active="commandes"></dash-nav>
+
+  <div class="dash-main">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Commandes</h1>
+        <p>Les commandes reçues, à préparer puis à livrer.</p>
+      </div>
+    </div>
+
+    <p class="callout"><strong>Maquette.</strong> Les filtres et la liste seront actifs une fois les commandes en ligne activées.</p>
+
+    <form class="toolbar" aria-label="Filtrer les commandes">
+      <div class="toolbar-filters">
+        <label class="field">Recherche
+          <input type="search" name="q" placeholder="N° de commande ou client" disabled>
+        </label>
+        <label class="field">Statut
+          <select name="status" disabled>
+            <option>Tous les statuts</option>
+            <option>En attente</option>
+            <option>En préparation</option>
+            <option>En livraison</option>
+            <option>Livrée</option>
+            <option>Annulée</option>
+          </select>
+        </label>
+        <label class="field">Jour de livraison
+          <input type="date" name="day" disabled>
+        </label>
+      </div>
+    </form>
+
+    <div class="table-wrap">
+      <table class="data">
+        <thead>
+          <tr><th>N°</th><th>Date</th><th>Client</th><th>Livraison</th><th>Statut</th><th class="num">Total</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="empty" colspan="7">Aucune commande pour le moment.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

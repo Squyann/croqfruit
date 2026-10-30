@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr" data-root="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mot de passe oublié — CroqFruit</title>
+<meta name="description" content="Recevez un lien par email pour réinitialiser votre mot de passe CroqFruit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/layout.js"></script>
+</head>
+<body>
+
+<site-header active=""></site-header>
+
+<main class="auth-page">
+  <div class="wrap">
+    <div class="auth-card">
+      <div>
+        <span class="eyebrow">Compte</span>
+        <h1>Mot de passe oublié</h1>
+        <p class="lede">Indiquez l'email de votre compte : nous vous enverrons un lien pour choisir un nouveau mot de passe.</p>
+      </div>
+
+      <p class="callout"><strong>Bientôt disponible.</strong> L'envoi du lien de réinitialisation n'est pas encore activé.</p>
+
+      <form class="form">
+        <label class="field">Email
+          <input type="email" name="email" required autocomplete="email">
+        </label>
+        <button type="submit" class="btn btn-primary btn-block" disabled>Envoyer le lien</button>
+      </form>
+
+      <p class="auth-alt"><a href="connexion.html">← Retour à la connexion</a></p>
+    </div>
+  </div>
+</main>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

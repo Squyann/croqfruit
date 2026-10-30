@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr" data-root="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes informations — CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<script src="js/layout.js"></script>
+</head>
+<body class="is-checking">
+
+<site-header active=""></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="account" active="informations"></dash-nav>
+
+  <div class="dash-main">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Mon compte</span>
+        <h1>Mes informations</h1>
+        <p>Vos coordonnées et vos paramètres de sécurité.</p>
+      </div>
+    </div>
+
+    <p class="callout"><strong>Maquette.</strong> L'enregistrement des modifications sera activé prochainement.</p>
+
+    <section class="panel">
+      <h2>Coordonnées</h2>
+      <form class="form">
+        <label class="field">Nom complet
+          <input type="text" name="fullName" autocomplete="name" data-user-fullname-input>
+        </label>
+        <label class="field">Email
+          <input type="email" name="email" autocomplete="email" readonly data-user-email>
+        </label>
+        <label class="field">Téléphone
+          <input type="tel" name="phone" autocomplete="tel" placeholder="Pour vous joindre le jour de la livraison">
+        </label>
+        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Enregistrer</button></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Mot de passe</h2>
+      <form class="form">
+        <label class="field">Nouveau mot de passe
+          <input type="password" name="password" autocomplete="new-password" minlength="8">
+        </label>
+        <label class="field">Confirmer le nouveau mot de passe
+          <input type="password" name="confirmPassword" autocomplete="new-password" minlength="8">
+        </label>
+        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Changer le mot de passe</button></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Mes données personnelles</h2>
+      <p>Conformément au RGPD, vous pouvez obtenir une copie de vos données ou supprimer votre compte. Plus d'informations dans notre <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
+      <div class="form-actions" style="margin-top:1rem">
+        <button type="button" class="btn btn-ghost" disabled>Exporter mes données</button>
+        <button type="button" class="btn btn-ghost" disabled>Supprimer mon compte</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/compte.js"></script>
+</body>
+</html>

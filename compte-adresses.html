@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr" data-root="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes adresses — CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<script src="js/layout.js"></script>
+</head>
+<body class="is-checking">
+
+<site-header active=""></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="account" active="adresses"></dash-nav>
+
+  <div class="dash-main">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Mon compte</span>
+        <h1>Mes adresses</h1>
+        <p>Les adresses où vous souhaitez être livré.</p>
+      </div>
+    </div>
+
+    <p class="callout"><strong>Maquette.</strong> L'enregistrement des adresses sera activé prochainement.</p>
+
+    <section class="panel">
+      <h2>Adresses enregistrées</h2>
+      <p class="state-message" style="padding-block:1.5rem"><strong>Aucune adresse enregistrée</strong>Ajoutez une adresse ci-dessous pour gagner du temps à la prochaine commande.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Ajouter une adresse</h2>
+      <form class="form">
+        <label class="field">Nom de l'adresse
+          <input type="text" name="label" placeholder="Maison, bureau…">
+        </label>
+        <label class="field">Adresse
+          <input type="text" name="street" autocomplete="address-line1" required>
+        </label>
+        <label class="field">Complément d'adresse
+          <input type="text" name="street2" autocomplete="address-line2" placeholder="Bâtiment, étage, escalier…">
+        </label>
+        <div class="field-row">
+          <label class="field">Code postal
+            <input type="text" name="postalCode" inputmode="numeric" autocomplete="postal-code" required>
+          </label>
+          <label class="field">Ville
+            <input type="text" name="city" autocomplete="address-level2" required>
+          </label>
+        </div>
+        <label class="field">Instructions pour le livreur
+          <textarea name="notes" placeholder="Code d'accès, interphone, lieu de dépose…"></textarea>
+        </label>
+        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Ajouter l'adresse</button></div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<site-footer></site-footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/compte.js"></script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 // (on évite ainsi d'afficher "déconnecté" une fraction de seconde avant
 // de savoir qu'une session existe déjà), puis `null` (déconnecté) ou l'objet
 // utilisateur Supabase (connecté).
+// Dépend de `ROOT` (js/layout.js) et de `supabaseClient` (js/supabase-client.js).
 let currentUser = undefined;
 const authListeners = [];
 
@@ -17,8 +18,13 @@ async function initAuth() {
     return;
   }
 
-  const { data } = await supabaseClient.auth.getSession();
-  currentUser = data.session?.user ?? null;
+  try {
+    const { data } = await supabaseClient.auth.getSession();
+    currentUser = data.session?.user ?? null;
+  } catch (error) {
+    console.error('Impossible de lire la session :', error);
+    currentUser = null;
+  }
   notifyAuthListeners();
 
   supabaseClient.auth.onAuthStateChange((_event, session) => {
@@ -50,13 +56,22 @@ const Auth = {
   },
 };
 
+// Lien "Se connecter" / "Mon compte" de l'en-tête.
 function renderAuthLinks(user) {
   document.querySelectorAll('[data-auth-link]').forEach((el) => {
     el.textContent = user ? 'Mon compte' : 'Se connecter';
+    el.setAttribute('href', `${ROOT}${user ? 'compte.html' : 'connexion.html'}`);
   });
 }
 
 Auth.subscribe(renderAuthLinks);
+
+// Tout élément [data-logout] déconnecte l'utilisateur.
+document.addEventListener('click', async (event) => {
+  if (!event.target.closest('[data-logout]')) return;
+  await Auth.signOut();
+  window.location.href = `${ROOT}index.html`;
+});
 
 const AUTH_ERROR_MESSAGES = {
   'Invalid login credentials': 'Email ou mot de passe incorrect.',
@@ -64,6 +79,7 @@ const AUTH_ERROR_MESSAGES = {
   'Password should be at least 6 characters': 'Le mot de passe doit contenir au moins 6 caractères.',
   'Email not confirmed': 'Merci de confirmer votre adresse email avant de vous connecter (vérifiez vos emails).',
   'Unable to validate email address: invalid format': 'Adresse email invalide.',
+  'email rate limit exceeded': 'Trop de demandes d’emails en peu de temps. Merci de réessayer dans un moment.',
 };
 
 function translateAuthError(error) {
