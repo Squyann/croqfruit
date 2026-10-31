@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../css/dashboard.css">
 <script src="../js/layout.js"></script>
 </head>
-<body>
+<body class="is-checking">
 
 <site-header variant="admin"></site-header>
 
@@ -29,12 +29,12 @@
       <a class="btn btn-primary" href="produit-edition.html">Ajouter un produit</a>
     </div>
 
-    <p class="callout"><strong>Maquette.</strong> L'accès sera réservé au compte administrateur, et les chiffres s'afficheront ici une fois les commandes en ligne activées.</p>
+    <p class="callout"><strong>En cours de construction.</strong> Produits et clients sont actifs. Les commandes et les livraisons s'afficheront ici dès que la prise de commande sera en place.</p>
 
     <div class="tiles">
       <a class="tile" href="commandes.html"><span>Commandes à préparer</span><span class="tile-value">—</span></a>
-      <a class="tile" href="produits.html"><span>Produits en ligne</span><span class="tile-value">—</span></a>
-      <a class="tile" href="clients.html"><span>Clients inscrits</span><span class="tile-value">—</span></a>
+      <a class="tile" href="produits.html"><span>Produits en vente</span><span class="tile-value" data-stat="products">…</span></a>
+      <a class="tile" href="clients.html"><span>Clients inscrits</span><span class="tile-value" data-stat="customers">…</span></a>
       <a class="tile" href="livraisons.html"><span>Livraisons à venir</span><span class="tile-value">—</span></a>
     </div>
 
@@ -56,6 +56,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
+<script src="../js/utils.js"></script>
 <script src="../js/auth.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/admin-dashboard.js"></script>
 </body>
 </html>

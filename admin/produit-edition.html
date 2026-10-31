@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fiche produit — Administration CroqFruit</title>
+<title>Ajouter un produit — Administration CroqFruit</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../css/dashboard.css">
 <script src="../js/layout.js"></script>
 </head>
-<body>
+<body class="is-checking">
 
 <site-header variant="admin"></site-header>
 
@@ -20,31 +20,31 @@
   <dash-nav set="admin" active="produits"></dash-nav>
 
   <div class="dash-main">
-    <ol class="crumbs"><li><a href="produits.html">Produits</a></li><li>Fiche produit</li></ol>
+    <ol class="crumbs"><li><a href="produits.html">Produits</a></li><li data-page-crumb>Nouveau produit</li></ol>
 
     <div class="dash-head">
       <div>
         <span class="eyebrow">Administration</span>
-        <h1>Ajouter un produit</h1>
+        <h1 data-page-title>Ajouter un produit</h1>
         <p>Ces informations s'affichent dans la boutique.</p>
       </div>
     </div>
 
-    <p class="callout"><strong>Maquette.</strong> L'enregistrement sera branché sur la table <code>products</code> de la base de données.</p>
+    <p class="state-message" id="product-loading" hidden>Chargement…</p>
 
-    <form class="form panel" style="max-width:40rem">
+    <form class="form panel" id="product-form" style="max-width:40rem">
       <label class="field">Nom du produit
-        <input type="text" name="name" required>
+        <input type="text" name="name" required maxlength="120">
       </label>
       <label class="field">Description <small>(facultatif)</small>
-        <textarea name="description"></textarea>
+        <textarea name="description" maxlength="600"></textarea>
       </label>
       <div class="field-row">
         <label class="field">Prix (€, TTC)
           <input type="number" name="price" min="0" step="0.01" required>
         </label>
         <label class="field">Unité de vente
-          <input type="text" name="unit" list="units" value="kg" required>
+          <input type="text" name="unit" list="units" value="kg" required maxlength="30">
           <datalist id="units">
             <option value="kg">
             <option value="pièce">
@@ -54,18 +54,31 @@
         </label>
       </div>
       <label class="field">Catégorie <small>(sert aux filtres de la boutique)</small>
-        <input type="text" name="category" placeholder="Fruits, Légumes…">
+        <input type="text" name="category" list="categories" placeholder="Fruits, Légumes…" maxlength="60">
+        <datalist id="categories"></datalist>
       </label>
-      <label class="field">Photo (URL) <small>(facultatif — l'envoi d'image viendra plus tard)</small>
-        <input type="url" name="image_url" placeholder="https://…">
-      </label>
+
+      <div class="field">
+        <label for="product-image">Photo <small>(facultatif — JPG, PNG ou WebP, 3 Mo maximum)</small></label>
+        <div class="image-preview" id="image-preview" hidden></div>
+        <input type="file" id="product-image" name="image" accept="image/jpeg,image/png,image/webp">
+        <label class="check" id="remove-image-row" hidden>
+          <input type="checkbox" name="removeImage">
+          <span>Retirer la photo actuelle</span>
+        </label>
+      </div>
+
       <label class="check">
         <input type="checkbox" name="in_stock" checked>
         <span>Visible et disponible dans la boutique</span>
       </label>
+
+      <p class="msg" data-notice hidden></p>
+
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary" disabled>Enregistrer</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
         <a class="btn btn-ghost" href="produits.html">Annuler</a>
+        <button type="button" class="btn btn-ghost" id="delete-product" hidden>Supprimer ce produit</button>
       </div>
     </form>
   </div>
@@ -73,6 +86,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
+<script src="../js/utils.js"></script>
 <script src="../js/auth.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/admin-produit-edition.js"></script>
 </body>
 </html>

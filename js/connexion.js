@@ -2,10 +2,10 @@ const loginForm = document.getElementById('login-form');
 const loginError = document.querySelector('[data-error]');
 
 // Page où renvoyer l'utilisateur après connexion (?redirect=commande.html).
-// Seuls les noms de pages à la racine du site sont acceptés (jamais d'URL externe).
+// Seules les pages du site sont acceptées (racine ou admin/), jamais d'URL externe.
 function redirectTarget() {
   const target = new URLSearchParams(window.location.search).get('redirect');
-  return target && /^[\w-]+\.html$/.test(target) ? target : 'compte.html';
+  return target && /^(admin\/)?[\w-]+\.html$/.test(target) ? target : 'compte.html';
 }
 
 loginForm.addEventListener('submit', async (event) => {

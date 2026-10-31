@@ -20,4 +20,11 @@ Auth.subscribe((user) => {
     el.value = fullName;
   });
   document.body.classList.remove('is-checking');
+
+  // Éléments réservés aux comptes administrateur (ex. lien vers l'administration).
+  Auth.getProfile().then((profile) => {
+    document.querySelectorAll('[data-admin-only]').forEach((el) => {
+      el.hidden = profile?.role !== 'admin';
+    });
+  });
 });

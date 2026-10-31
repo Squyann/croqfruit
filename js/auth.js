@@ -33,9 +33,27 @@ async function initAuth() {
   });
 }
 
+// Profil (nom, email, rôle) de l'utilisateur connecté, lu une seule fois par page.
+let profileCache = { userId: null, promise: null };
+
 const Auth = {
   getUser() {
     return currentUser;
+  },
+  getProfile() {
+    if (!currentUser || !supabaseClient) return Promise.resolve(null);
+    if (profileCache.userId !== currentUser.id) {
+      profileCache = {
+        userId: currentUser.id,
+        promise: supabaseClient
+          .from('profiles')
+          .select('full_name, email, role')
+          .eq('id', currentUser.id)
+          .maybeSingle()
+          .then(({ data }) => data ?? null, () => null),
+      };
+    }
+    return profileCache.promise;
   },
   subscribe(listen) {
     authListeners.push(listen);
@@ -54,6 +72,9 @@ const Auth = {
   async signOut() {
     return supabaseClient.auth.signOut();
   },
+  async updatePassword(password) {
+    return supabaseClient.auth.updateUser({ password });
+  },
 };
 
 // Lien "Se connecter" / "Mon compte" de l'en-tête.
@@ -65,6 +86,15 @@ function renderAuthLinks(user) {
 }
 
 Auth.subscribe(renderAuthLinks);
+
+// Lien "Administration" de l'en-tête : visible uniquement pour un compte admin.
+// (Simple confort : la vraie protection est dans les règles RLS de la base.)
+Auth.subscribe(async (user) => {
+  const profile = user ? await Auth.getProfile() : null;
+  document.querySelectorAll('[data-admin-link]').forEach((el) => {
+    el.hidden = profile?.role !== 'admin';
+  });
+});
 
 // Tout élément [data-logout] déconnecte l'utilisateur.
 document.addEventListener('click', async (event) => {
@@ -79,6 +109,7 @@ const AUTH_ERROR_MESSAGES = {
   'Password should be at least 6 characters': 'Le mot de passe doit contenir au moins 6 caractères.',
   'Email not confirmed': 'Merci de confirmer votre adresse email avant de vous connecter (vérifiez vos emails).',
   'Unable to validate email address: invalid format': 'Adresse email invalide.',
+  'New password should be different from the old password.': 'Le nouveau mot de passe doit être différent de l’ancien.',
   'email rate limit exceeded': 'Trop de demandes d’emails en peu de temps. Merci de réessayer dans un moment.',
 };
 

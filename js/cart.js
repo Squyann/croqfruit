@@ -70,10 +70,6 @@ const Cart = {
   },
 };
 
-function formatPrice(value) {
-  return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
-}
-
 function renderCartBadge() {
   document.querySelectorAll('[data-cart-badge]').forEach((badge) => {
     const count = Cart.getCount();

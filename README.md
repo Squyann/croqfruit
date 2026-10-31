@@ -17,11 +17,21 @@ python -m http.server 5173
 | Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés |
 | Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier fonctionnel ; fiche produit, commande et confirmation = maquettes |
 | Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
-| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; contenus = maquettes |
+| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; changement de mot de passe fonctionnel, le reste = maquettes |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
-| Administration | `admin/index.html`, `commandes.html`, `commande.html`, `produits.html`, `produit-edition.html`, `clients.html`, `livraisons.html` | maquettes, **pas encore protégées** |
+| Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html` | **fonctionnelles**, réservées au rôle `admin` |
+| Administration (à venir) | `admin/commandes.html`, `commande.html`, `livraisons.html` | maquettes (en attente des tables commandes / livraisons) |
 
 Les maquettes affichent un encadré « Maquette » et leurs boutons sont désactivés tant que la fonctionnalité n'existe pas.
+
+## Administration
+
+Un compte devient administrateur quand sa ligne `profiles.role` vaut `admin` (à positionner en SQL depuis le tableau de bord Supabase : `update public.profiles set role = 'admin' where email = '…';`). Depuis le site, **personne ne peut modifier ce champ**.
+
+- Un admin voit un lien « Administration » dans l'en-tête et dans son espace client.
+- Les pages `admin/` redirigent vers la connexion si on n'est pas connecté, et affichent « Accès réservé » pour un compte non-admin. **C'est un simple confort d'affichage** : la vraie protection est dans la base (règles RLS, testées) — un non-admin ne peut ni lire les produits masqués, ni la liste des clients, ni écrire quoi que ce soit.
+- Produits : ajout, modification, masquage / mise en vente, suppression, photo (JPG, PNG ou WebP, 3 Mo max) envoyée dans le bucket `product-images`. Un produit masqué (`in_stock = false`) n'apparaît pas dans la boutique.
+- Clients : liste des comptes inscrits (nom, email, date).
 
 ## Structure
 
@@ -34,8 +44,10 @@ js/layout.js        en-tête, pied de page et menus (balises <site-header>, <sit
 js/supabase-client.js   connexion Supabase + lecture des produits
 js/auth.js          état de connexion partagé, déconnexion, messages d'erreur
 js/cart.js          panier (stocké dans le navigateur)
-js/utils.js         échappement HTML, pastille produit
-js/boutique.js, panier.js, commande.js, connexion.js, inscription.js, compte.js   logique par page
+js/utils.js         échappement HTML, formats prix / date, pastille produit
+js/admin.js         garde des pages admin + envoi / suppression des photos produit
+js/boutique.js, panier.js, commande.js, connexion.js, inscription.js, compte.js, compte-informations.js   logique par page
+js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js            logique des pages admin
 ```
 
 ### Modifier l'en-tête, le pied de page ou la navigation
@@ -56,12 +68,14 @@ Projet : **CroqFruit** (région UE, Irlande). L'URL et la clé publique (`sb_pub
 
 Tables actuelles :
 
-- `products` — `id`, `name`, `description`, `price`, `unit`, `category`, `image_url`, `in_stock`. Lecture publique seule ; aucun produit n'est codé en dur dans le site.
-- `profiles` — `id` (réf. `auth.users`), `full_name`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne peut lire que sa propre ligne.
+- `products` — `id`, `name`, `description`, `price`, `unit`, `category`, `image_url`, `in_stock`. Le public ne lit que les produits `in_stock` ; seul un admin peut créer, modifier, supprimer ou voir les produits masqués. Aucun produit n'est codé en dur dans le site.
+- `profiles` — `id` (réf. `auth.users`), `full_name`, `email`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne lit que sa propre ligne, un admin lit toutes les lignes.
+- Stockage : bucket public `product-images` (lecture publique, écriture réservée aux admins).
+- La fonction `private.is_admin()` (schéma `private`, non exposé par l'API) sert aux règles RLS.
 
 Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
 
-À prévoir : commandes, adresses, zones et créneaux de livraison, messages de contact, protection de l'administration par le rôle `admin`.
+À prévoir : commandes, adresses, zones et créneaux de livraison, messages de contact.
 
 Remarques :
 

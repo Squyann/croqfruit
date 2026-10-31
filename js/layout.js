@@ -69,6 +69,7 @@ class SiteHeader extends HTMLElement {
             </ul>
           </nav>
           <div class="nav-side">
+            <a class="account-link" href="${ROOT}admin/index.html" data-admin-link hidden>Administration</a>
             <a class="account-link" href="${ROOT}connexion.html" data-auth-link>Se connecter</a>
             <a class="cart-btn" href="${ROOT}panier.html" data-cart-trigger aria-label="Voir le panier">
               ${CART_ICON}
@@ -150,7 +151,8 @@ const DASH_SETS = {
       ['compte-informations.html', 'Mes informations', 'informations'],
       ['compte-adresses.html', 'Mes adresses', 'adresses'],
     ],
-    extra: '<li><button type="button" class="dash-nav-muted" data-logout>Se déconnecter</button></li>',
+    extra: `<li data-admin-only hidden><a href="${ROOT}admin/index.html">Administration</a></li>
+            <li><button type="button" class="dash-nav-muted" data-logout>Se déconnecter</button></li>`,
   },
   admin: {
     label: 'Administration',

@@ -55,6 +55,8 @@
 }
 
 *{ box-sizing: border-box; }
+/* L'attribut hidden doit toujours l'emporter sur un display défini ailleurs (flex, grid…) */
+[hidden]{ display: none !important; }
 html{ -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: no-preference){
   html{ scroll-behavior: smooth; }

@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../css/dashboard.css">
 <script src="../js/layout.js"></script>
 </head>
-<body>
+<body class="is-checking">
 
 <site-header variant="admin"></site-header>
 
@@ -24,16 +24,14 @@
       <div>
         <span class="eyebrow">Administration</span>
         <h1>Clients</h1>
-        <p>Les comptes clients inscrits sur le site.</p>
+        <p>Les comptes inscrits sur le site. Ces données sont personnelles : à n'utiliser que pour le service.</p>
       </div>
     </div>
 
-    <p class="callout"><strong>Maquette.</strong> La liste sera alimentée par les comptes (authentification et table <code>profiles</code>). Ces données sont personnelles : leur consultation est réservée à l'administration.</p>
-
-    <form class="toolbar" aria-label="Rechercher un client">
+    <form class="toolbar" aria-label="Rechercher un client" onsubmit="return false">
       <div class="toolbar-filters">
         <label class="field">Recherche
-          <input type="search" name="q" placeholder="Nom ou email" disabled>
+          <input type="search" id="client-search" placeholder="Nom ou email">
         </label>
       </div>
     </form>
@@ -41,10 +39,10 @@
     <div class="table-wrap">
       <table class="data">
         <thead>
-          <tr><th>Nom</th><th>Email</th><th>Inscrit le</th><th class="num">Commandes</th><th></th></tr>
+          <tr><th>Nom</th><th>Email</th><th>Inscrit le</th><th>Type de compte</th></tr>
         </thead>
-        <tbody>
-          <tr><td class="empty" colspan="5">Aucun client pour le moment.</td></tr>
+        <tbody id="clients-body">
+          <tr><td class="empty" colspan="4">Chargement…</td></tr>
         </tbody>
       </table>
     </div>
@@ -53,6 +51,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
+<script src="../js/utils.js"></script>
 <script src="../js/auth.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/admin-clients.js"></script>
 </body>
 </html>
