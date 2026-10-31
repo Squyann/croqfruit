@@ -49,6 +49,9 @@
 
           <fieldset class="form-group">
             <legend>Adresse de livraison</legend>
+            <label class="field" data-saved-addresses hidden>Mes adresses enregistrées
+              <select name="savedAddress"><option value="">Une autre adresse</option></select>
+            </label>
             <label class="field">Adresse
               <input type="text" name="street" autocomplete="address-line1" minlength="3" maxlength="150" required>
             </label>
@@ -66,6 +69,10 @@
             <p class="msg" data-zone-msg>Saisissez votre code postal pour connaître les frais de livraison.</p>
             <label class="field">Instructions pour le livreur
               <textarea name="notes" maxlength="500" placeholder="Code d'accès, interphone, lieu de dépose…"></textarea>
+            </label>
+            <label class="check" data-save-address hidden>
+              <input type="checkbox" name="saveAddress">
+              <span>Enregistrer cette adresse pour mes prochaines commandes</span>
             </label>
           </fieldset>
 

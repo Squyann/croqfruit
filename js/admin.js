@@ -71,12 +71,3 @@ async function deleteProductImage(url) {
   const { error } = await supabaseClient.storage.from(IMAGE_BUCKET).remove([path]);
   if (error) console.error('Suppression de la photo :', error);
 }
-
-// Affiche un message dans l'élément [data-notice] de la page.
-function setNotice(message, isError = false) {
-  const el = document.querySelector('[data-notice]');
-  if (!el) return;
-  el.textContent = message;
-  el.className = `msg ${isError ? 'msg-error' : 'msg-ok'}`;
-  el.hidden = !message;
-}

@@ -5,6 +5,15 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (char) => HTML_ESCAPES[char]);
 }
 
+// Affiche un message dans l'élément [data-notice] de la page.
+function setNotice(message, isError = false) {
+  const el = document.querySelector('[data-notice]');
+  if (!el) return;
+  el.textContent = message;
+  el.className = `msg ${isError ? 'msg-error' : 'msg-ok'}`;
+  el.hidden = !message;
+}
+
 function formatPrice(value) {
   return Number(value).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
@@ -27,6 +36,9 @@ const PAYMENT_STATUSES = { unpaid: 'À régler', paid: 'Payée', refunded: 'Remb
 
 // Jours de la semaine, indexés comme `weekday` en base (1 = lundi … 7 = dimanche).
 const WEEKDAY_NAMES = ['', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+// Nombre maximal d'adresses enregistrées par client (imposé par la base : private.prepare_address).
+const MAX_ADDRESSES = 10;
 
 function formatOrderNumber(number) {
   return `CF-${String(number).padStart(5, '0')}`;
@@ -64,6 +76,7 @@ function formatSlot(start, end) {
   return `${formatTime(start)} – ${formatTime(end)}`;
 }
 
+// Fonctionne pour une commande comme pour une adresse enregistrée (mêmes colonnes).
 function formatAddress(order) {
   return [order.address_line1, order.address_line2, `${order.postal_code} ${order.city}`]
     .filter(Boolean)

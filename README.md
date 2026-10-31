@@ -17,7 +17,7 @@ python -m http.server 5173
 | Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal |
 | Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels** ; fiche produit = maquette |
 | Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
-| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; historique et détail des commandes, changement de mot de passe fonctionnels ; le reste = maquettes |
+| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste = maquettes |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
 | Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html`, `commandes.html`, `commande.html`, `livraisons.html` | **fonctionnelles**, réservées au rôle `admin` |
 
@@ -56,10 +56,10 @@ js/layout.js        en-tête, pied de page et menus (balises <site-header>, <sit
 js/supabase-client.js   connexion Supabase + lecture des produits
 js/auth.js          état de connexion partagé, déconnexion, messages d'erreur
 js/cart.js          panier (stocké dans le navigateur)
-js/utils.js         échappement HTML, formats prix / date / créneau, statuts de commande, pastille produit
+js/utils.js         échappement HTML, formats prix / date / créneau / adresse, statuts de commande, messages de page, pastille produit
 js/admin.js         garde des pages admin + envoi / suppression des photos produit
 js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, connexion.js, inscription.js,
-  compte.js, compte-commandes.js, compte-commande.js, compte-informations.js   logique par page
+  compte.js, compte-commandes.js, compte-commande.js, compte-adresses.js, compte-informations.js   logique par page
 js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js,
   admin-commandes.js, admin-commande.js, admin-livraisons.js            logique des pages admin
 ```
@@ -87,12 +87,13 @@ Tables actuelles :
 - `delivery_zones` (nom, codes postaux, frais, seuil de gratuité, minimum) et `delivery_slots` (jour, plage horaire, capacité) — lisibles par tous (la page « Livraison » et le formulaire de commande en ont besoin), modifiables par un admin uniquement.
 - `orders` — commande avec coordonnées et adresse recopiées au moment de l'achat, créneau, montants, statut, règlement, note interne. Un client ne lit que ses commandes, un admin les lit toutes et peut les modifier ; **personne ne peut en insérer directement** : tout passe par `place_order`.
 - `order_items` — lignes d'une commande (nom, unité, prix unitaire et quantité figés à l'achat), visibles avec leur commande.
+- `addresses` — carnet d'adresses d'un client (nom, adresse, instructions pour le livreur, adresse par défaut). Chacun ne voit et ne modifie que les siennes (même pas l'admin : une commande garde sa propre copie de l'adresse). Règles imposées par la base : 10 adresses au maximum, une seule adresse par défaut, la première adresse enregistrée l'est d'office. À la commande, l'adresse par défaut est préremplie et le client peut en choisir une autre ou enregistrer celle qu'il vient de saisir.
 - Stockage : bucket public `product-images` (lecture publique, écriture réservée aux admins).
 - Fonctions : `private.is_admin()` (règles RLS), `private.create_order()` (enregistre la commande) et `private.delivery_availability()` (places restantes par créneau) vivent dans le schéma `private`, non exposé par l'API ; seules les enveloppes `public.place_order()` et `public.get_delivery_availability()` sont appelables, par les comptes connectés.
 
 Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
 
-À prévoir : adresses enregistrées, messages de contact, paiement en ligne.
+À prévoir : messages de contact, paiement en ligne.
 
 Remarques :
 

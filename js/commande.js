@@ -13,8 +13,13 @@ const closedEl = document.querySelector('[data-shop-closed]');
 const feeEl = document.querySelector('[data-delivery-fee]');
 const totalEl = document.querySelector('[data-order-total]');
 
+const savedWrap = orderForm.querySelector('[data-saved-addresses]');
+const saveWrap = orderForm.querySelector('[data-save-address]');
+
 let zones = [];
 let availability = [];
+let savedAddresses = [];
+let userId = null;
 let started = false;
 let sending = false;
 
@@ -26,6 +31,57 @@ function showError(message) {
   errorEl.textContent = message;
   errorEl.hidden = !message;
 }
+
+// ---------- adresses enregistrées ----------
+
+function fillAddress(address) {
+  fields.street.value = address.address_line1;
+  fields.street2.value = address.address_line2 ?? '';
+  fields.postalCode.value = address.postal_code;
+  fields.city.value = address.city;
+  fields.notes.value = address.delivery_notes ?? '';
+}
+
+function addressKey(address) {
+  return [address.address_line1, address.address_line2, address.postal_code, address.city]
+    .map((part) => (part ?? '').trim().toLowerCase())
+    .join('|');
+}
+
+function renderSavedAddresses() {
+  savedWrap.hidden = savedAddresses.length === 0;
+  fields.savedAddress.innerHTML =
+    '<option value="">Une autre adresse</option>' +
+    savedAddresses
+      .map((a) => `<option value="${escapeHtml(a.id)}">${escapeHtml(a.label ? `${a.label} — ` : '')}${escapeHtml(formatAddress(a))}</option>`)
+      .join('');
+}
+
+// Propose d'enregistrer l'adresse saisie, sauf si elle est incomplète, déjà dans le carnet,
+// ou si le carnet est plein.
+function updateSaveOption() {
+  const typed = {
+    address_line1: fields.street.value,
+    address_line2: fields.street2.value,
+    postal_code: fields.postalCode.value,
+    city: fields.city.value,
+  };
+  const complete = typed.address_line1.trim() && /^\d{5}$/.test(typed.postal_code.trim()) && typed.city.trim();
+  const known = savedAddresses.some((a) => addressKey(a) === addressKey(typed));
+  const canSave = Boolean(complete) && !known && savedAddresses.length < MAX_ADDRESSES;
+  saveWrap.hidden = !canSave;
+  if (!canSave) fields.saveAddress.checked = false;
+}
+
+fields.savedAddress.addEventListener('change', () => {
+  const chosen = savedAddresses.find((a) => a.id === fields.savedAddress.value);
+  fillAddress(chosen ?? { address_line1: '', postal_code: '', city: '' });
+  renderZone();
+  updateSaveOption();
+});
+[fields.street, fields.street2, fields.postalCode, fields.city].forEach((input) =>
+  input.addEventListener('input', updateSaveOption)
+);
 
 // ---------- zone, frais et totaux ----------
 
@@ -142,7 +198,7 @@ function showSyncNotice({ removed, repriced }) {
 }
 
 async function init(user) {
-  const [syncResult, zonesResult, availabilityLoaded, lastOrder] = await Promise.all([
+  const [syncResult, zonesResult, availabilityLoaded, lastOrder, addressesResult] = await Promise.all([
     Cart.syncWithCatalog(),
     supabaseClient.from('delivery_zones').select('*').order('created_at'),
     loadAvailability(),
@@ -153,20 +209,30 @@ async function init(user) {
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
+    supabaseClient.from('addresses').select('*').order('is_default', { ascending: false }).order('created_at'),
   ]);
 
   showSyncNotice(syncResult);
 
-  // Prérempli avec la dernière commande de ce client.
+  if (addressesResult.error) console.error('Chargement des adresses :', addressesResult.error);
+  savedAddresses = addressesResult.data ?? [];
+  renderSavedAddresses();
+
+  // Prérempli : nom et téléphone de la dernière commande ; adresse par défaut du carnet,
+  // à défaut l'adresse de la dernière commande.
   const last = lastOrder.data;
   if (last) {
     fields.fullName.value = last.customer_name;
     fields.phone.value = last.customer_phone;
-    fields.street.value = last.address_line1;
-    fields.street2.value = last.address_line2 ?? '';
-    fields.postalCode.value = last.postal_code;
-    fields.city.value = last.city;
   }
+  const preferred = savedAddresses.find((a) => a.is_default);
+  if (preferred) {
+    fields.savedAddress.value = preferred.id;
+    fillAddress(preferred);
+  } else if (last) {
+    fillAddress(last);
+  }
+  updateSaveOption();
 
   if (zonesResult.error) console.error('Chargement des zones :', zonesResult.error);
   zones = zonesResult.data ?? [];
@@ -235,6 +301,19 @@ orderForm.addEventListener('submit', async (event) => {
     return;
   }
 
+  // Enregistrement facultatif de l'adresse : un échec ne doit pas gêner une commande déjà passée.
+  if (!saveWrap.hidden && fields.saveAddress.checked) {
+    const { error: saveError } = await supabaseClient.from('addresses').insert({
+      user_id: userId,
+      address_line1: fields.street.value.trim(),
+      address_line2: fields.street2.value.trim() || null,
+      postal_code: fields.postalCode.value.trim(),
+      city: fields.city.value.trim(),
+      delivery_notes: fields.notes.value.trim() || null,
+    });
+    if (saveError) console.error("Enregistrement de l'adresse :", saveError);
+  }
+
   document.body.classList.add('is-checking');
   Cart.clear();
   window.location.href = `commande-confirmee.html?id=${encodeURIComponent(data)}`;
@@ -248,6 +327,7 @@ Auth.subscribe((user) => {
   }
   if (started) return;
   started = true;
+  userId = user.id;
 
   fields.email.value = user.email;
   fields.fullName.value = user.user_metadata?.full_name || '';

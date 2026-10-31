@@ -24,41 +24,51 @@
       <div>
         <span class="eyebrow">Mon compte</span>
         <h1>Mes adresses</h1>
-        <p>Les adresses où vous souhaitez être livré.</p>
+        <p>Les adresses où vous souhaitez être livré. L'adresse par défaut est proposée en premier à la commande.</p>
       </div>
     </div>
 
-    <p class="callout"><strong>Maquette.</strong> L'enregistrement des adresses sera activé prochainement.</p>
+    <p class="msg" data-notice hidden></p>
 
     <section class="panel">
       <h2>Adresses enregistrées</h2>
-      <p class="state-message" style="padding-block:1.5rem"><strong>Aucune adresse enregistrée</strong>Ajoutez une adresse ci-dessous pour gagner du temps à la prochaine commande.</p>
+      <ul class="address-grid" id="address-list">
+        <li class="state-message" style="padding-block:1.5rem;grid-column:1/-1">Chargement…</li>
+      </ul>
     </section>
 
-    <section class="panel">
-      <h2>Ajouter une adresse</h2>
-      <form class="form">
+    <section class="panel" id="address-panel">
+      <h2 data-form-title>Ajouter une adresse</h2>
+      <form class="form" id="address-form">
+        <p class="msg msg-error" data-limit hidden>Vous avez atteint le maximum de 10 adresses : supprimez-en une pour en ajouter une nouvelle.</p>
         <label class="field">Nom de l'adresse
-          <input type="text" name="label" placeholder="Maison, bureau…">
+          <input type="text" name="label" maxlength="40" placeholder="Maison, bureau…">
         </label>
         <label class="field">Adresse
-          <input type="text" name="street" autocomplete="address-line1" required>
+          <input type="text" name="street" autocomplete="address-line1" minlength="3" maxlength="150" required>
         </label>
         <label class="field">Complément d'adresse
-          <input type="text" name="street2" autocomplete="address-line2" placeholder="Bâtiment, étage, escalier…">
+          <input type="text" name="street2" autocomplete="address-line2" maxlength="150" placeholder="Bâtiment, étage, escalier…">
         </label>
         <div class="field-row">
           <label class="field">Code postal
-            <input type="text" name="postalCode" inputmode="numeric" autocomplete="postal-code" required>
+            <input type="text" name="postalCode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" required>
           </label>
           <label class="field">Ville
-            <input type="text" name="city" autocomplete="address-level2" required>
+            <input type="text" name="city" autocomplete="address-level2" maxlength="80" required>
           </label>
         </div>
         <label class="field">Instructions pour le livreur
-          <textarea name="notes" placeholder="Code d'accès, interphone, lieu de dépose…"></textarea>
+          <textarea name="notes" maxlength="500" placeholder="Code d'accès, interphone, lieu de dépose…"></textarea>
         </label>
-        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Ajouter l'adresse</button></div>
+        <label class="check">
+          <input type="checkbox" name="isDefault">
+          <span>Utiliser comme adresse par défaut</span>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Ajouter l'adresse</button>
+          <button type="button" class="btn btn-ghost" data-cancel hidden>Annuler</button>
+        </div>
       </form>
     </section>
   </div>
@@ -68,8 +78,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/compte.js"></script>
+<script src="js/compte-adresses.js"></script>
 </body>
 </html>
