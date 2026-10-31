@@ -29,13 +29,11 @@
       <a class="btn btn-primary" href="produit-edition.html">Ajouter un produit</a>
     </div>
 
-    <p class="callout"><strong>En cours de construction.</strong> Produits et clients sont actifs. Les commandes et les livraisons s'afficheront ici dès que la prise de commande sera en place.</p>
-
     <div class="tiles">
-      <a class="tile" href="commandes.html"><span>Commandes à préparer</span><span class="tile-value">—</span></a>
+      <a class="tile" href="commandes.html"><span>Commandes à préparer</span><span class="tile-value" data-stat="toPrepare">…</span></a>
       <a class="tile" href="produits.html"><span>Produits en vente</span><span class="tile-value" data-stat="products">…</span></a>
       <a class="tile" href="clients.html"><span>Clients inscrits</span><span class="tile-value" data-stat="customers">…</span></a>
-      <a class="tile" href="livraisons.html"><span>Livraisons à venir</span><span class="tile-value">—</span></a>
+      <a class="tile" href="livraisons.html"><span>Livraisons à venir</span><span class="tile-value" data-stat="upcoming">…</span></a>
     </div>
 
     <section class="panel">
@@ -45,8 +43,8 @@
           <thead>
             <tr><th>N°</th><th>Date</th><th>Client</th><th>Statut</th><th class="num">Total</th></tr>
           </thead>
-          <tbody>
-            <tr><td class="empty" colspan="5">Aucune commande pour le moment.</td></tr>
+          <tbody id="recent-orders">
+            <tr><td class="empty" colspan="5">Chargement…</td></tr>
           </tbody>
         </table>
       </div>

@@ -66,6 +66,7 @@ class SiteHeader extends HTMLElement {
               ${item('index.html#comment', 'Comment ça marche', '')}
               ${item('a-propos.html', 'Qui sommes-nous', 'a-propos')}
               ${item('contact.html', 'Contact', 'contact')}
+              <li data-admin-link hidden><a href="${ROOT}admin/index.html">Administration</a></li>
             </ul>
           </nav>
           <div class="nav-side">

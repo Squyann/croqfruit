@@ -11,31 +11,37 @@
 <link rel="stylesheet" href="css/style.css">
 <script src="js/layout.js"></script>
 </head>
-<body>
+<body class="is-checking">
 
 <site-header active=""></site-header>
 
 <main class="auth-page">
   <div class="wrap">
-    <div class="auth-card" style="max-width:36rem">
+    <div class="auth-card" style="max-width:36rem" data-order-content hidden>
       <div>
         <span class="eyebrow">Commande</span>
         <h1>Merci pour votre commande</h1>
-        <p class="lede">Votre commande n° <strong>—</strong> a bien été enregistrée. Votre primeur la prépare pour la livraison.</p>
+        <p class="lede">Votre commande n° <strong data-order-number></strong> a bien été enregistrée. Votre primeur la prépare pour la livraison.</p>
       </div>
 
       <dl class="info-list">
-        <div class="info-row"><dt>Livraison prévue</dt><dd>—</dd></div>
-        <div class="info-row"><dt>Adresse</dt><dd>—</dd></div>
-        <div class="info-row"><dt>Total</dt><dd>—</dd></div>
+        <div class="info-row"><dt>Livraison prévue</dt><dd data-order-delivery></dd></div>
+        <div class="info-row"><dt>Adresse</dt><dd data-order-address></dd></div>
+        <div class="info-row"><dt>Total</dt><dd data-order-total></dd></div>
       </dl>
 
-      <p class="callout"><strong>Maquette.</strong> Cette page affichera le récapitulatif réel une fois la commande en ligne activée.</p>
+      <p class="callout"><strong>Règlement.</strong> <mark class="todo">[Modalités de paiement à indiquer]</mark></p>
 
       <div class="form-actions">
         <a class="btn btn-primary" href="compte-commandes.html">Suivre mes commandes</a>
         <a class="btn btn-ghost" href="boutique.html">Retour à la boutique</a>
       </div>
+    </div>
+
+    <div class="state-message" data-order-missing hidden>
+      <strong>Commande introuvable</strong>
+      Cette commande n'existe pas ou n'est pas associée à votre compte.<br>
+      <a class="btn btn-primary" href="compte-commandes.html">Mes commandes</a>
     </div>
   </div>
 </main>
@@ -44,7 +50,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/commande-confirmee.js"></script>
 </body>
 </html>

@@ -22,75 +22,93 @@
   <div class="dash-main">
     <ol class="crumbs"><li><a href="commandes.html">Commandes</a></li><li>Détail</li></ol>
 
-    <div class="dash-head">
-      <div>
-        <span class="eyebrow">Commande</span>
-        <h1>Commande n° —</h1>
-        <p>Passée le —</p>
-      </div>
-      <span class="badge">Statut à venir</span>
+    <div class="state-message" data-order-missing hidden>
+      <strong>Commande introuvable</strong>
+      Cette commande n'existe pas.<br>
+      <a class="btn btn-primary" href="commandes.html">Retour aux commandes</a>
     </div>
 
-    <p class="callout"><strong>Maquette.</strong> Cette page affichera le détail d'une commande et permettra d'en changer le statut.</p>
-
-    <div class="split">
-      <div class="stack" style="gap:1.5rem">
-        <div class="table-wrap">
-          <table class="data">
-            <thead>
-              <tr><th>Produit</th><th class="num">Quantité</th><th class="num">Prix unitaire</th><th class="num">Total</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="empty" colspan="4">Les articles de la commande s'afficheront ici.</td></tr>
-            </tbody>
-          </table>
+    <div class="stack" style="gap:1.5rem" data-order-content hidden>
+      <div class="dash-head">
+        <div>
+          <span class="eyebrow">Commande</span>
+          <h1 data-order-title></h1>
+          <p data-order-date></p>
         </div>
-
-        <section class="panel">
-          <h2>Notes internes</h2>
-          <form class="form">
-            <label class="field">Note (visible uniquement par l'administration)
-              <textarea name="notes" disabled></textarea>
-            </label>
-            <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Enregistrer la note</button></div>
-          </form>
-        </section>
+        <span data-order-status></span>
       </div>
 
-      <div class="stack" style="gap:1.5rem">
-        <section class="panel">
-          <h2>Statut</h2>
-          <form class="form">
-            <label class="field">Changer le statut
-              <select name="status" disabled>
-                <option>En attente</option>
-                <option>En préparation</option>
-                <option>En livraison</option>
-                <option>Livrée</option>
-                <option>Annulée</option>
-              </select>
-            </label>
-            <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Mettre à jour</button></div>
-          </form>
-        </section>
+      <p class="msg" data-notice hidden></p>
 
-        <section class="panel">
-          <h2>Client</h2>
-          <dl class="info-list">
-            <div class="info-row"><dt>Nom</dt><dd>—</dd></div>
-            <div class="info-row"><dt>Email</dt><dd>—</dd></div>
-            <div class="info-row"><dt>Téléphone</dt><dd>—</dd></div>
-          </dl>
-        </section>
+      <div class="split">
+        <div class="stack" style="gap:1.5rem">
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr><th>Produit</th><th class="num">Quantité</th><th class="num">Prix unitaire</th><th class="num">Total</th></tr>
+              </thead>
+              <tbody data-order-items></tbody>
+              <tfoot>
+                <tr><td colspan="3">Sous-total</td><td class="num" data-order-subtotal></td></tr>
+                <tr><td colspan="3">Livraison</td><td class="num" data-order-fee></td></tr>
+                <tr><th colspan="3" scope="row">Total</th><th class="num" data-order-total></th></tr>
+              </tfoot>
+            </table>
+          </div>
 
-        <section class="panel">
-          <h2>Livraison</h2>
-          <dl class="info-list">
-            <div class="info-row"><dt>Adresse</dt><dd>—</dd></div>
-            <div class="info-row"><dt>Créneau</dt><dd>—</dd></div>
-            <div class="info-row"><dt>Instructions</dt><dd>—</dd></div>
-          </dl>
-        </section>
+          <section class="panel">
+            <h2>Notes internes</h2>
+            <form class="form" id="notes-form">
+              <label class="field">Note (visible uniquement par l'administration)
+                <textarea name="notes" maxlength="2000"></textarea>
+              </label>
+              <div class="form-actions"><button type="submit" class="btn btn-primary">Enregistrer la note</button></div>
+            </form>
+          </section>
+        </div>
+
+        <div class="stack" style="gap:1.5rem">
+          <section class="panel">
+            <h2>Suivi</h2>
+            <form class="form" id="status-form">
+              <label class="field">Statut
+                <select name="status">
+                  <option value="pending">En attente</option>
+                  <option value="preparing">En préparation</option>
+                  <option value="out_for_delivery">En livraison</option>
+                  <option value="delivered">Livrée</option>
+                  <option value="cancelled">Annulée</option>
+                </select>
+              </label>
+              <label class="field">Règlement
+                <select name="payment">
+                  <option value="unpaid">À régler</option>
+                  <option value="paid">Payée</option>
+                  <option value="refunded">Remboursée</option>
+                </select>
+              </label>
+              <div class="form-actions"><button type="submit" class="btn btn-primary">Mettre à jour</button></div>
+            </form>
+          </section>
+
+          <section class="panel">
+            <h2>Client</h2>
+            <dl class="info-list">
+              <div class="info-row"><dt>Nom</dt><dd data-order-customer></dd></div>
+              <div class="info-row"><dt>Email</dt><dd data-order-email></dd></div>
+              <div class="info-row"><dt>Téléphone</dt><dd data-order-phone></dd></div>
+            </dl>
+          </section>
+
+          <section class="panel">
+            <h2>Livraison</h2>
+            <dl class="info-list">
+              <div class="info-row"><dt>Adresse</dt><dd data-order-address></dd></div>
+              <div class="info-row"><dt>Créneau</dt><dd data-order-slot></dd></div>
+              <div class="info-row"><dt>Instructions</dt><dd data-order-instructions></dd></div>
+            </dl>
+          </section>
+        </div>
       </div>
     </div>
   </div>
@@ -98,7 +116,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
+<script src="../js/utils.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/admin.js"></script>
+<script src="../js/admin-commande.js"></script>
 </body>
 </html>

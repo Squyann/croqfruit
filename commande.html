@@ -26,21 +26,22 @@
 
   <div class="wrap page-body">
     <div data-cart-content hidden>
-      <p class="callout" style="margin-bottom:1.5rem"><strong>Maquette.</strong> La validation de la commande n'est pas encore activée : les champs ci-dessous montrent les étapes prévues.</p>
+      <p class="callout" style="margin-bottom:1.5rem" data-cart-notice hidden></p>
+      <p class="callout" style="margin-bottom:1.5rem" data-shop-closed hidden></p>
 
       <div class="split">
         <form class="stack" id="order-form">
           <fieldset class="form-group">
             <legend>Vos coordonnées</legend>
             <label class="field">Nom complet
-              <input type="text" name="fullName" autocomplete="name" required data-user-fullname-input>
+              <input type="text" name="fullName" autocomplete="name" minlength="2" maxlength="100" required>
             </label>
             <div class="field-row">
               <label class="field">Email
                 <input type="email" name="email" readonly data-user-email>
               </label>
               <label class="field">Téléphone
-                <input type="tel" name="phone" autocomplete="tel" required>
+                <input type="tel" name="phone" autocomplete="tel" minlength="6" maxlength="30" required>
                 <small>Utile au livreur le jour de la livraison.</small>
               </label>
             </div>
@@ -48,27 +49,23 @@
 
           <fieldset class="form-group">
             <legend>Adresse de livraison</legend>
-            <label class="field">Adresses enregistrées
-              <select name="savedAddress" disabled>
-                <option>Aucune adresse enregistrée</option>
-              </select>
-            </label>
             <label class="field">Adresse
-              <input type="text" name="street" autocomplete="address-line1" required>
+              <input type="text" name="street" autocomplete="address-line1" minlength="3" maxlength="150" required>
             </label>
             <label class="field">Complément d'adresse
-              <input type="text" name="street2" autocomplete="address-line2" placeholder="Bâtiment, étage, escalier…">
+              <input type="text" name="street2" autocomplete="address-line2" maxlength="150" placeholder="Bâtiment, étage, escalier…">
             </label>
             <div class="field-row">
               <label class="field">Code postal
-                <input type="text" name="postalCode" inputmode="numeric" autocomplete="postal-code" required>
+                <input type="text" name="postalCode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" required>
               </label>
               <label class="field">Ville
-                <input type="text" name="city" autocomplete="address-level2" required>
+                <input type="text" name="city" autocomplete="address-level2" maxlength="80" required>
               </label>
             </div>
+            <p class="msg" data-zone-msg>Saisissez votre code postal pour connaître les frais de livraison.</p>
             <label class="field">Instructions pour le livreur
-              <textarea name="notes" placeholder="Code d'accès, interphone, lieu de dépose…"></textarea>
+              <textarea name="notes" maxlength="500" placeholder="Code d'accès, interphone, lieu de dépose…"></textarea>
             </label>
           </fieldset>
 
@@ -76,10 +73,10 @@
             <legend>Créneau de livraison</legend>
             <div class="field-row">
               <label class="field">Jour
-                <select name="day" disabled><option>Les jours disponibles seront proposés selon votre adresse</option></select>
+                <select name="day" required disabled><option value="">Chargement…</option></select>
               </label>
               <label class="field">Créneau
-                <select name="slot" disabled><option>—</option></select>
+                <select name="slot" required disabled><option value="">—</option></select>
               </label>
             </div>
             <p class="msg">Voir les <a href="livraison.html">conditions de livraison</a>.</p>
@@ -88,22 +85,24 @@
           <fieldset class="form-group">
             <legend>Paiement</legend>
             <p class="msg"><mark class="todo">[Moyens de paiement à définir]</mark></p>
+            <p class="msg">Le règlement n'est pas encore pris en charge par le site : la commande est enregistrée et le montant à régler figure dans votre récapitulatif.</p>
           </fieldset>
 
           <label class="check">
             <input type="checkbox" name="terms" required>
             <span>J'ai lu et j'accepte les <a href="cgv.html">conditions générales de vente</a>.</span>
           </label>
+
+          <p class="msg msg-error" data-error hidden></p>
         </form>
 
         <aside class="summary">
           <h2>Votre commande</h2>
           <ul class="lines lines--compact" data-cart-lines></ul>
           <div class="summary-row"><span data-cart-count></span><span data-cart-subtotal></span></div>
-          <div class="summary-row"><span>Livraison</span><span>Indiquée avant validation</span></div>
-          <div class="summary-row summary-total"><span>Total produits</span><span data-cart-subtotal></span></div>
-          <button type="submit" form="order-form" class="btn btn-primary btn-block" disabled>Confirmer la commande</button>
-          <p class="msg">La validation de commande sera disponible prochainement.</p>
+          <div class="summary-row"><span>Livraison</span><span data-delivery-fee>Selon votre code postal</span></div>
+          <div class="summary-row summary-total"><span>Total</span><span data-order-total></span></div>
+          <button type="submit" form="order-form" class="btn btn-primary btn-block" data-submit disabled>Confirmer la commande</button>
           <a class="btn-text" href="panier.html">← Modifier mon panier</a>
         </aside>
       </div>

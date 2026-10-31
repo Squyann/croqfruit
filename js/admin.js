@@ -24,8 +24,7 @@ const adminReady = new Promise((resolve) => {
 
   Auth.subscribe(async (user) => {
     if (!user) {
-      const page = window.location.pathname.split('/').pop() || 'index.html';
-      window.location.replace(`${ROOT}connexion.html?redirect=admin/${encodeURIComponent(page)}`);
+      window.location.replace(`${ROOT}connexion.html?redirect=${encodeURIComponent(pageForRedirect('admin/'))}`);
       return;
     }
 

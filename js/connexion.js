@@ -5,7 +5,7 @@ const loginError = document.querySelector('[data-error]');
 // Seules les pages du site sont acceptées (racine ou admin/), jamais d'URL externe.
 function redirectTarget() {
   const target = new URLSearchParams(window.location.search).get('redirect');
-  return target && /^(admin\/)?[\w-]+\.html$/.test(target) ? target : 'compte.html';
+  return target && /^(admin\/)?[\w-]+\.html(\?id=[0-9a-f-]{36})?$/i.test(target) ? target : 'compte.html';
 }
 
 loginForm.addEventListener('submit', async (event) => {

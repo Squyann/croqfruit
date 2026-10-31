@@ -77,6 +77,15 @@ const Auth = {
   },
 };
 
+// Page courante, à passer en `?redirect=` de la page de connexion. On conserve
+// `?id=…` (fiches commande, édition de produit) ; tout autre paramètre est abandonné.
+// Le motif accepté ici doit rester identique à celui de redirectTarget() (js/connexion.js).
+function pageForRedirect(prefix = '') {
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  const id = /^\?id=[0-9a-f-]{36}$/i.test(window.location.search) ? window.location.search : '';
+  return `${prefix}${page}${id}`;
+}
+
 // Lien "Se connecter" / "Mon compte" de l'en-tête.
 function renderAuthLinks(user) {
   document.querySelectorAll('[data-auth-link]').forEach((el) => {

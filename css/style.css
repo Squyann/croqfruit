@@ -189,6 +189,10 @@ header{
   .nav-links a::after{ display: none; }
 }
 
+/* Lien « Administration » (comptes admin) : dans la barre au-dessus de 560 px, dans le menu en dessous. */
+@media (min-width: 561px){ .nav-links li[data-admin-link]{ display: none !important; } }
+@media (max-width: 560px){ .nav-side [data-admin-link]{ display: none !important; } }
+
 /* ---------- boutons ---------- */
 .btn{
   font-family: var(--font-utility);

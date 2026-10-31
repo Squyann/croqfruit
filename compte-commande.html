@@ -22,44 +22,49 @@
   <div class="dash-main">
     <ol class="crumbs"><li><a href="compte.html">Mon compte</a></li><li><a href="compte-commandes.html">Mes commandes</a></li><li>Détail</li></ol>
 
-    <div class="dash-head">
-      <div>
-        <span class="eyebrow">Commande</span>
-        <h1>Commande n° —</h1>
-        <p>Passée le —</p>
+    <div class="state-message" data-order-missing hidden>
+      <strong>Commande introuvable</strong>
+      Cette commande n'existe pas ou n'est pas associée à votre compte.<br>
+      <a class="btn btn-primary" href="compte-commandes.html">Mes commandes</a>
+    </div>
+
+    <div class="stack" style="gap:1.5rem" data-order-content hidden>
+      <div class="dash-head">
+        <div>
+          <span class="eyebrow">Commande</span>
+          <h1 data-order-title></h1>
+          <p data-order-date></p>
+        </div>
+        <span data-order-status></span>
       </div>
-      <span class="badge">Statut à venir</span>
-    </div>
 
-    <div class="table-wrap">
-      <table class="data">
-        <thead>
-          <tr><th>Produit</th><th class="num">Quantité</th><th class="num">Prix unitaire</th><th class="num">Total</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="empty" colspan="4">Les articles de la commande s'afficheront ici.</td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th>Produit</th><th class="num">Quantité</th><th class="num">Prix unitaire</th><th class="num">Total</th></tr>
+          </thead>
+          <tbody data-order-items></tbody>
+        </table>
+      </div>
 
-    <div class="split">
-      <section class="panel">
-        <h2>Livraison</h2>
-        <dl class="info-list" style="border-bottom:0">
-          <div class="info-row"><dt>Adresse</dt><dd>—</dd></div>
-          <div class="info-row"><dt>Créneau</dt><dd>—</dd></div>
-          <div class="info-row"><dt>Instructions</dt><dd>—</dd></div>
-        </dl>
-      </section>
-      <aside class="summary">
-        <h2>Montant</h2>
-        <div class="summary-row"><span>Sous-total</span><span>—</span></div>
-        <div class="summary-row"><span>Livraison</span><span>—</span></div>
-        <div class="summary-row summary-total"><span>Total TTC</span><span>—</span></div>
-      </aside>
+      <div class="split">
+        <section class="panel">
+          <h2>Livraison</h2>
+          <dl class="info-list" style="border-bottom:0">
+            <div class="info-row"><dt>Adresse</dt><dd data-order-address></dd></div>
+            <div class="info-row"><dt>Créneau</dt><dd data-order-slot></dd></div>
+            <div class="info-row"><dt>Instructions</dt><dd data-order-notes></dd></div>
+          </dl>
+        </section>
+        <aside class="summary">
+          <h2>Montant</h2>
+          <div class="summary-row"><span>Sous-total</span><span data-order-subtotal></span></div>
+          <div class="summary-row"><span>Livraison</span><span data-order-fee></span></div>
+          <div class="summary-row summary-total"><span>Total</span><span data-order-total></span></div>
+          <div class="summary-row"><span>Règlement</span><span data-order-payment></span></div>
+        </aside>
+      </div>
     </div>
-
-    <p class="callout"><strong>Maquette.</strong> Cette page affichera le détail d'une commande une fois la commande en ligne activée.</p>
   </div>
 </main>
 
@@ -67,8 +72,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/compte.js"></script>
+<script src="js/compte-commande.js"></script>
 </body>
 </html>

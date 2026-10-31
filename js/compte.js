@@ -3,8 +3,7 @@
 // (Simple confort d'affichage : la vraie protection des données vient des règles RLS.)
 Auth.subscribe((user) => {
   if (!user) {
-    const page = window.location.pathname.split('/').pop() || 'compte.html';
-    window.location.replace(`connexion.html?redirect=${encodeURIComponent(page)}`);
+    window.location.replace(`connexion.html?redirect=${encodeURIComponent(pageForRedirect())}`);
     return;
   }
 

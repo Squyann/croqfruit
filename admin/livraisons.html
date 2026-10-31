@@ -28,7 +28,9 @@
       </div>
     </div>
 
-    <p class="callout"><strong>Maquette.</strong> Les zones et créneaux saisis ici alimenteront la page « Livraison » et le choix du créneau à la commande.</p>
+    <p class="callout">Les zones et créneaux définis ici alimentent la page « Livraison » et le choix du créneau à la commande. Un client peut choisir un jour compris entre demain et dans 14 jours, parmi les créneaux ci-dessous.</p>
+
+    <p class="msg" data-notice hidden></p>
 
     <section class="panel">
       <h2>Livraisons à venir</h2>
@@ -37,8 +39,8 @@
           <thead>
             <tr><th>Jour</th><th>Créneau</th><th>Client</th><th>Adresse</th><th>Statut</th></tr>
           </thead>
-          <tbody>
-            <tr><td class="empty" colspan="5">Aucune livraison planifiée.</td></tr>
+          <tbody id="upcoming-body">
+            <tr><td class="empty" colspan="5">Chargement…</td></tr>
           </tbody>
         </table>
       </div>
@@ -51,29 +53,36 @@
           <thead>
             <tr><th>Zone</th><th>Codes postaux</th><th class="num">Frais</th><th class="num">Minimum de commande</th><th></th></tr>
           </thead>
-          <tbody>
-            <tr><td class="empty" colspan="5">Aucune zone définie.</td></tr>
+          <tbody id="zones-body">
+            <tr><td class="empty" colspan="5">Chargement…</td></tr>
           </tbody>
         </table>
       </div>
-      <form class="form" style="margin-top:1.25rem">
+      <form class="form" id="zone-form" style="margin-top:1.25rem">
         <div class="field-row">
           <label class="field">Nom de la zone
-            <input type="text" name="zone" disabled>
+            <input type="text" name="zone" maxlength="80" required>
           </label>
           <label class="field">Codes postaux
-            <input type="text" name="postalCodes" placeholder="Séparés par des virgules" disabled>
+            <input type="text" name="postalCodes" placeholder="Séparés par des virgules" required>
           </label>
         </div>
         <div class="field-row">
           <label class="field">Frais de livraison (€)
-            <input type="number" name="fee" min="0" step="0.01" disabled>
+            <input type="number" name="fee" min="0" step="0.01" required>
+          </label>
+          <label class="field">Offerte à partir de (€)
+            <input type="number" name="freeFrom" min="0.01" step="0.01">
+            <small>Laisser vide si la livraison n'est jamais offerte.</small>
           </label>
           <label class="field">Minimum de commande (€)
-            <input type="number" name="minimum" min="0" step="0.01" disabled>
+            <input type="number" name="minimum" min="0" step="0.01" placeholder="0">
           </label>
         </div>
-        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Ajouter la zone</button></div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Ajouter la zone</button>
+          <button type="button" class="btn btn-ghost" data-cancel hidden>Annuler</button>
+        </div>
       </form>
     </section>
 
@@ -84,29 +93,33 @@
           <thead>
             <tr><th>Jour</th><th>Plage horaire</th><th class="num">Capacité</th><th></th></tr>
           </thead>
-          <tbody>
-            <tr><td class="empty" colspan="4">Aucun créneau défini.</td></tr>
+          <tbody id="slots-body">
+            <tr><td class="empty" colspan="4">Chargement…</td></tr>
           </tbody>
         </table>
       </div>
-      <form class="form" style="margin-top:1.25rem">
+      <form class="form" id="slot-form" style="margin-top:1.25rem">
         <div class="field-row">
           <label class="field">Jour
-            <select name="weekday" disabled>
-              <option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option><option>Samedi</option><option>Dimanche</option>
+            <select name="weekday" required>
+              <option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option><option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="7">Dimanche</option>
             </select>
           </label>
           <label class="field">Début
-            <input type="time" name="start" disabled>
+            <input type="time" name="start" required>
           </label>
           <label class="field">Fin
-            <input type="time" name="end" disabled>
+            <input type="time" name="end" required>
           </label>
           <label class="field">Capacité (commandes)
-            <input type="number" name="capacity" min="1" disabled>
+            <input type="number" name="capacity" min="1" step="1" required>
+            <small>Nombre de commandes acceptées par jour sur ce créneau.</small>
           </label>
         </div>
-        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Ajouter le créneau</button></div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Ajouter le créneau</button>
+          <button type="button" class="btn btn-ghost" data-cancel hidden>Annuler</button>
+        </div>
       </form>
     </section>
   </div>
@@ -114,7 +127,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
+<script src="../js/utils.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/admin.js"></script>
+<script src="../js/admin-livraisons.js"></script>
 </body>
 </html>

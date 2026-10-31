@@ -14,13 +14,12 @@ python -m http.server 5173
 
 | Zone | Pages | État |
 |---|---|---|
-| Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés |
-| Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier fonctionnel ; fiche produit, commande et confirmation = maquettes |
+| Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal |
+| Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels** ; fiche produit = maquette |
 | Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
-| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; changement de mot de passe fonctionnel, le reste = maquettes |
+| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; historique et détail des commandes, changement de mot de passe fonctionnels ; le reste = maquettes |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
-| Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html` | **fonctionnelles**, réservées au rôle `admin` |
-| Administration (à venir) | `admin/commandes.html`, `commande.html`, `livraisons.html` | maquettes (en attente des tables commandes / livraisons) |
+| Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html`, `commandes.html`, `commande.html`, `livraisons.html` | **fonctionnelles**, réservées au rôle `admin` |
 
 Les maquettes affichent un encadré « Maquette » et leurs boutons sont désactivés tant que la fonctionnalité n'existe pas.
 
@@ -32,6 +31,19 @@ Un compte devient administrateur quand sa ligne `profiles.role` vaut `admin` (à
 - Les pages `admin/` redirigent vers la connexion si on n'est pas connecté, et affichent « Accès réservé » pour un compte non-admin. **C'est un simple confort d'affichage** : la vraie protection est dans la base (règles RLS, testées) — un non-admin ne peut ni lire les produits masqués, ni la liste des clients, ni écrire quoi que ce soit.
 - Produits : ajout, modification, masquage / mise en vente, suppression, photo (JPG, PNG ou WebP, 3 Mo max) envoyée dans le bucket `product-images`. Un produit masqué (`in_stock = false`) n'apparaît pas dans la boutique.
 - Clients : liste des comptes inscrits (nom, email, date).
+- Commandes : liste filtrable (recherche, statut, jour de livraison), fiche commande avec changement de statut, suivi du règlement et note interne.
+- Livraisons : tournées à venir, zones desservies et créneaux (voir ci-dessous).
+
+## Commandes et livraisons
+
+**Pour que les clients puissent commander, il faut définir au moins une zone et un créneau** dans `admin/livraisons.html`. Tant que ce n'est pas fait, la page de commande affiche « La prise de commande n'est pas encore ouverte ».
+
+- **Zone** : un nom, un ou plusieurs codes postaux (un code ne peut appartenir qu'à une zone), des frais de livraison, un seuil optionnel au-delà duquel la livraison est offerte, et un minimum de commande.
+- **Créneau** : un jour de la semaine, une plage horaire et une capacité (nombre de commandes acceptées ce jour-là sur ce créneau). Une commande annulée libère sa place.
+- **Fenêtre de livraison** : le client choisit un jour entre demain et dans 14 jours (heure de Paris), parmi les créneaux définis. Ces deux bornes sont codées dans `private.delivery_window()` côté base ; il n'y a pas encore d'heure limite de commande.
+- **Création d'une commande** : uniquement par la fonction `place_order` de la base. Le navigateur n'envoie que des identifiants de produits et des quantités ; les prix, les frais, le minimum de commande, la zone et la capacité du créneau sont vérifiés et recalculés par la base, qui conserve une copie des noms et prix au moment de l'achat. Un client ne peut ni choisir son prix ni créer une commande autrement.
+- **Statuts** : En attente → En préparation → En livraison → Livrée (ou Annulée), modifiables par l'admin.
+- **Paiement** : le site n'encaisse rien pour l'instant. Chaque commande a un état de règlement (à régler / payée / remboursée) que l'admin renseigne à la main. Les modalités de paiement sont à définir avec le primeur (zone surlignée dans `commande.html` et `commande-confirmee.html`).
 
 ## Structure
 
@@ -44,10 +56,12 @@ js/layout.js        en-tête, pied de page et menus (balises <site-header>, <sit
 js/supabase-client.js   connexion Supabase + lecture des produits
 js/auth.js          état de connexion partagé, déconnexion, messages d'erreur
 js/cart.js          panier (stocké dans le navigateur)
-js/utils.js         échappement HTML, formats prix / date, pastille produit
+js/utils.js         échappement HTML, formats prix / date / créneau, statuts de commande, pastille produit
 js/admin.js         garde des pages admin + envoi / suppression des photos produit
-js/boutique.js, panier.js, commande.js, connexion.js, inscription.js, compte.js, compte-informations.js   logique par page
-js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js            logique des pages admin
+js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, connexion.js, inscription.js,
+  compte.js, compte-commandes.js, compte-commande.js, compte-informations.js   logique par page
+js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js,
+  admin-commandes.js, admin-commande.js, admin-livraisons.js            logique des pages admin
 ```
 
 ### Modifier l'en-tête, le pied de page ou la navigation
@@ -70,12 +84,15 @@ Tables actuelles :
 
 - `products` — `id`, `name`, `description`, `price`, `unit`, `category`, `image_url`, `in_stock`. Le public ne lit que les produits `in_stock` ; seul un admin peut créer, modifier, supprimer ou voir les produits masqués. Aucun produit n'est codé en dur dans le site.
 - `profiles` — `id` (réf. `auth.users`), `full_name`, `email`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne lit que sa propre ligne, un admin lit toutes les lignes.
+- `delivery_zones` (nom, codes postaux, frais, seuil de gratuité, minimum) et `delivery_slots` (jour, plage horaire, capacité) — lisibles par tous (la page « Livraison » et le formulaire de commande en ont besoin), modifiables par un admin uniquement.
+- `orders` — commande avec coordonnées et adresse recopiées au moment de l'achat, créneau, montants, statut, règlement, note interne. Un client ne lit que ses commandes, un admin les lit toutes et peut les modifier ; **personne ne peut en insérer directement** : tout passe par `place_order`.
+- `order_items` — lignes d'une commande (nom, unité, prix unitaire et quantité figés à l'achat), visibles avec leur commande.
 - Stockage : bucket public `product-images` (lecture publique, écriture réservée aux admins).
-- La fonction `private.is_admin()` (schéma `private`, non exposé par l'API) sert aux règles RLS.
+- Fonctions : `private.is_admin()` (règles RLS), `private.create_order()` (enregistre la commande) et `private.delivery_availability()` (places restantes par créneau) vivent dans le schéma `private`, non exposé par l'API ; seules les enveloppes `public.place_order()` et `public.get_delivery_availability()` sont appelables, par les comptes connectés.
 
 Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
 
-À prévoir : commandes, adresses, zones et créneaux de livraison, messages de contact.
+À prévoir : adresses enregistrées, messages de contact, paiement en ligne.
 
 Remarques :
 
