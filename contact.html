@@ -26,36 +26,47 @@
 
   <div class="wrap page-body">
     <div class="split">
-      <form class="form" id="contact-form">
-        <p class="callout"><strong>Maquette.</strong> L'envoi du formulaire n'est pas encore activé.</p>
+      <div>
+        <form class="form" id="contact-form">
+          <div class="field-row">
+            <label class="field">Nom
+              <input type="text" name="name" autocomplete="name" minlength="2" maxlength="100" required>
+            </label>
+            <label class="field">Email
+              <input type="email" name="email" autocomplete="email" maxlength="254" required>
+            </label>
+          </div>
+          <label class="field">Sujet
+            <select name="subject" required>
+              <option value="">Choisir…</option>
+              <option value="order">Une commande</option>
+              <option value="product">Un produit</option>
+              <option value="delivery">La livraison</option>
+              <option value="account">Mon compte</option>
+              <option value="other">Autre</option>
+            </select>
+          </label>
+          <label class="field">Message
+            <textarea name="message" minlength="10" maxlength="3000" rows="7" required></textarea>
+          </label>
+          <!-- Piège à robots : champ invisible pour les visiteurs, que les robots remplissent. -->
+          <div class="hp" aria-hidden="true">
+            <label>Ne pas remplir ce champ <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <label class="check">
+            <input type="checkbox" name="consent" required>
+            <span>J'accepte que mes données soient utilisées pour répondre à ma demande, comme décrit dans la <a href="politique-confidentialite.html">politique de confidentialité</a>.</span>
+          </label>
+          <p class="msg msg-error" data-error hidden></p>
+          <div class="form-actions"><button type="submit" class="btn btn-primary">Envoyer le message</button></div>
+        </form>
 
-        <div class="field-row">
-          <label class="field">Nom
-            <input type="text" name="name" autocomplete="name" required>
-          </label>
-          <label class="field">Email
-            <input type="email" name="email" autocomplete="email" required>
-          </label>
+        <div class="state-message" data-contact-done hidden>
+          <strong>Message envoyé</strong>
+          Merci, nous avons bien reçu votre message et nous vous répondrons à l'adresse indiquée.<br>
+          <a class="btn btn-primary" href="boutique.html">Voir la boutique</a>
         </div>
-        <label class="field">Sujet
-          <select name="subject" required>
-            <option value="">Choisir…</option>
-            <option>Une commande</option>
-            <option>Un produit</option>
-            <option>La livraison</option>
-            <option>Mon compte</option>
-            <option>Autre</option>
-          </select>
-        </label>
-        <label class="field">Message
-          <textarea name="message" required></textarea>
-        </label>
-        <label class="check">
-          <input type="checkbox" name="consent" required>
-          <span>J'accepte que mes données soient utilisées pour répondre à ma demande, comme décrit dans la <a href="politique-confidentialite.html">politique de confidentialité</a>.</span>
-        </label>
-        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Envoyer le message</button></div>
-      </form>
+      </div>
 
       <aside class="card">
         <h2>Coordonnées</h2>
@@ -75,7 +86,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/contact.js"></script>
 </body>
 </html>

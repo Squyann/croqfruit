@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr" data-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messages — Administration CroqFruit</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<script src="../js/layout.js"></script>
+</head>
+<body class="is-checking">
+
+<site-header variant="admin"></site-header>
+
+<main class="wrap dash">
+  <dash-nav set="admin" active="messages"></dash-nav>
+
+  <div class="dash-main">
+    <div class="dash-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Messages</h1>
+        <p>Les messages reçus par le formulaire de contact. La réponse s'envoie depuis votre messagerie.</p>
+      </div>
+    </div>
+
+    <form class="toolbar" aria-label="Filtrer les messages" onsubmit="return false">
+      <div class="toolbar-filters">
+        <label class="field">Recherche
+          <input type="search" id="message-search" placeholder="Nom, email ou texte du message">
+        </label>
+        <label class="field">Statut
+          <select id="message-status">
+            <option value="">Tous les statuts</option>
+            <option value="new">Nouveaux</option>
+            <option value="read">Lus</option>
+            <option value="done">Traités</option>
+          </select>
+        </label>
+      </div>
+    </form>
+
+    <p class="msg" data-notice hidden></p>
+
+    <ul class="message-list" id="message-list">
+      <li class="state-message" style="padding-block:1.5rem">Chargement…</li>
+    </ul>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/admin-messages.js"></script>
+</body>
+</html>

@@ -322,6 +322,8 @@ fieldset.form-group legend{ font-family: var(--font-body); font-weight: 600; fon
 .msg{ font-family: var(--font-utility); font-size: 0.88rem; margin: 0; }
 .msg-error{ color: var(--red); font-weight: 600; }
 .msg-ok{ color: var(--leaf); }
+/* Piège à robots des formulaires : hors écran, ni visible ni atteignable au clavier. */
+.hp{ position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
 /* ---------- pages d'authentification ---------- */
 .auth-page{ padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3.5rem, 7vw, 5.5rem); }

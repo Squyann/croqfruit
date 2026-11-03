@@ -163,6 +163,7 @@ const DASH_SETS = {
       ['admin/produits.html', 'Produits', 'produits'],
       ['admin/clients.html', 'Clients', 'clients'],
       ['admin/livraisons.html', 'Livraisons', 'livraisons'],
+      ['admin/messages.html', 'Messages', 'messages'],
     ],
     extra: `<li><a class="dash-nav-muted" href="${ROOT}index.html">Retour au site</a></li>`,
   },

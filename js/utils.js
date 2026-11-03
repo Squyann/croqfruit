@@ -34,6 +34,21 @@ const ORDER_STATUSES = {
 
 const PAYMENT_STATUSES = { unpaid: 'À régler', paid: 'Payée', refunded: 'Remboursée' };
 
+// Messages du formulaire de contact (valeurs de `subject` et `status` en base).
+const CONTACT_SUBJECTS = {
+  order: 'Une commande',
+  product: 'Un produit',
+  delivery: 'La livraison',
+  account: 'Mon compte',
+  other: 'Autre',
+};
+
+const MESSAGE_STATUSES = {
+  new: { label: 'Nouveau', badge: 'badge-warn' },
+  read: { label: 'Lu', badge: '' },
+  done: { label: 'Traité', badge: 'badge-ok' },
+};
+
 // Jours de la semaine, indexés comme `weekday` en base (1 = lundi … 7 = dimanche).
 const WEEKDAY_NAMES = ['', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
@@ -81,6 +96,10 @@ function formatAddress(order) {
   return [order.address_line1, order.address_line2, `${order.postal_code} ${order.city}`]
     .filter(Boolean)
     .join(', ');
+}
+
+function formatDateTime(isoDate) {
+  return new Date(isoDate).toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function productInitial(name) {

@@ -63,6 +63,29 @@ a.tile .tile-value{ font-family: var(--font-display); font-size: 2rem; color: va
 .address-card h3{ display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0; font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; }
 .address-card p{ margin: 0; color: var(--ink-soft); font-family: var(--font-utility); font-size: 0.92rem; overflow-wrap: anywhere; }
 .address-card .row-actions{ justify-content: flex-start; margin-top: auto; padding-top: 0.6rem; }
+.message-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.message{ border: 1px solid var(--line); background: var(--paper-deep); }
+.message.is-new{ border-left: 3px solid var(--red); }
+.message summary{
+  display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto auto; gap: 0.75rem 1rem; align-items: center;
+  padding: 0.9rem 1.1rem; cursor: pointer; list-style: none;
+}
+.message summary::-webkit-details-marker{ display: none; }
+.message summary:hover{ background: color-mix(in srgb, var(--red) 6%, transparent); }
+.message-from{ display: flex; flex-direction: column; min-width: 0; }
+.message-from strong, .message-from small{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.message-from small{ color: var(--ink-soft); font-family: var(--font-utility); }
+.message-subject, .message-date{ font-family: var(--font-utility); font-size: 0.88rem; color: var(--ink-soft); }
+.message.is-new .message-from strong{ color: var(--red); }
+.message-body{ padding: 0.25rem 1.1rem 1.1rem; border-top: 1px solid var(--line); }
+.message-text{ margin: 1rem 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message-body .row-actions{ justify-content: flex-start; }
+@media (max-width: 640px){
+  .message summary{ grid-template-columns: minmax(0, 1fr) auto; }
+  .message-subject{ grid-column: 1; }
+  .message-date{ grid-column: 1; }
+  .message summary .badge{ grid-column: 2; grid-row: 1; }
+}
 .row-actions{ display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; }
 .image-preview{ width: 160px; aspect-ratio: 4 / 3; border: 1px solid var(--line); background: var(--paper-deep); overflow: clip; }
 .image-preview img{ width: 100%; height: 100%; object-fit: cover; }

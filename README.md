@@ -14,7 +14,7 @@ python -m http.server 5173
 
 | Zone | Pages | État |
 |---|---|---|
-| Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal |
+| Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal ; le formulaire de `contact.html` enregistre les messages en base |
 | Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels** ; fiche produit = maquette |
 | Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
 | Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste = maquettes |
@@ -33,6 +33,15 @@ Un compte devient administrateur quand sa ligne `profiles.role` vaut `admin` (à
 - Clients : liste des comptes inscrits (nom, email, date).
 - Commandes : liste filtrable (recherche, statut, jour de livraison), fiche commande avec changement de statut, suivi du règlement et note interne.
 - Livraisons : tournées à venir, zones desservies et créneaux (voir ci-dessous).
+- Messages : boîte de réception du formulaire de contact (voir ci-dessous).
+
+## Formulaire de contact
+
+Le formulaire de `contact.html` enregistre chaque message dans la table `contact_messages`. **Le site n'envoie aucun email** : les messages se lisent dans l'administration (page « Messages », avec un compteur de messages non lus sur le tableau de bord), et le bouton « Répondre par email » ouvre la messagerie de l'admin. Un message ouvert est marqué comme lu ; l'admin peut aussi le marquer comme traité, le remettre en non lu ou le supprimer.
+
+- **Antispam** : un champ caché que seuls les robots remplissent (leur envoi est ignoré sans rien enregistrer) et, côté base, au plus 3 messages par adresse email et par heure et 100 messages par heure au total. Si du spam passe malgré tout, la suite logique est d'ajouter un test anti-robot (par exemple Cloudflare Turnstile).
+- **Conservation** : aucun message n'est supprimé automatiquement. La durée de conservation à annoncer figure dans la politique de confidentialité (ligne « Répondre à vos messages », zone surlignée) ; il faudra supprimer les anciens messages à la main, ou ajouter une purge automatique une fois la durée choisie.
+- Un client connecté a son nom et son email préremplis ; son message est alors rattaché à son compte.
 
 ## Commandes et livraisons
 
@@ -58,10 +67,10 @@ js/auth.js          état de connexion partagé, déconnexion, messages d'erreur
 js/cart.js          panier (stocké dans le navigateur)
 js/utils.js         échappement HTML, formats prix / date / créneau / adresse, statuts de commande, messages de page, pastille produit
 js/admin.js         garde des pages admin + envoi / suppression des photos produit
-js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, connexion.js, inscription.js,
+js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, contact.js, connexion.js, inscription.js,
   compte.js, compte-commandes.js, compte-commande.js, compte-adresses.js, compte-informations.js   logique par page
 js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js,
-  admin-commandes.js, admin-commande.js, admin-livraisons.js            logique des pages admin
+  admin-commandes.js, admin-commande.js, admin-livraisons.js, admin-messages.js            logique des pages admin
 ```
 
 ### Modifier l'en-tête, le pied de page ou la navigation
@@ -88,12 +97,13 @@ Tables actuelles :
 - `orders` — commande avec coordonnées et adresse recopiées au moment de l'achat, créneau, montants, statut, règlement, note interne. Un client ne lit que ses commandes, un admin les lit toutes et peut les modifier ; **personne ne peut en insérer directement** : tout passe par `place_order`.
 - `order_items` — lignes d'une commande (nom, unité, prix unitaire et quantité figés à l'achat), visibles avec leur commande.
 - `addresses` — carnet d'adresses d'un client (nom, adresse, instructions pour le livreur, adresse par défaut). Chacun ne voit et ne modifie que les siennes (même pas l'admin : une commande garde sa propre copie de l'adresse). Règles imposées par la base : 10 adresses au maximum, une seule adresse par défaut, la première adresse enregistrée l'est d'office. À la commande, l'adresse par défaut est préremplie et le client peut en choisir une autre ou enregistrer celle qu'il vient de saisir.
+- `contact_messages` — messages du formulaire de contact (nom, email, sujet, message, statut nouveau / lu / traité). **N'importe quel visiteur peut en écrire, seul un admin peut les lire, modifier ou supprimer** ; un visiteur ne peut ni choisir le statut ni écrire au nom d'un autre compte. Un déclencheur limite le volume (voir « Formulaire de contact »).
 - Stockage : bucket public `product-images` (lecture publique, écriture réservée aux admins).
 - Fonctions : `private.is_admin()` (règles RLS), `private.create_order()` (enregistre la commande) et `private.delivery_availability()` (places restantes par créneau) vivent dans le schéma `private`, non exposé par l'API ; seules les enveloppes `public.place_order()` et `public.get_delivery_availability()` sont appelables, par les comptes connectés.
 
 Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
 
-À prévoir : messages de contact, paiement en ligne.
+À prévoir : paiement en ligne, envoi d'emails automatiques (confirmation de commande, réponse aux messages).
 
 Remarques :
 

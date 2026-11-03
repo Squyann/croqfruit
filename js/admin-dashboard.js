@@ -32,11 +32,12 @@ function renderRecentOrders({ data, error }) {
 adminReady.then(async () => {
   const count = (table) => supabaseClient.from(table).select('id', { count: 'exact', head: true });
 
-  const [products, customers, toPrepare, upcoming, recent] = await Promise.all([
+  const [products, customers, toPrepare, upcoming, unread, recent] = await Promise.all([
     count('products').eq('in_stock', true),
     count('profiles').eq('role', 'customer'),
     count('orders').in('status', ['pending', 'preparing']),
     count('orders').gte('delivery_date', toIsoDay(new Date())).not('status', 'in', '(delivered,cancelled)'),
+    count('contact_messages').eq('status', 'new'),
     supabaseClient
       .from('orders')
       .select('id, number, created_at, customer_name, status, total')
@@ -47,5 +48,6 @@ adminReady.then(async () => {
   setStat('customers', customers);
   setStat('toPrepare', toPrepare);
   setStat('upcoming', upcoming);
+  setStat('unread', unread);
   renderRecentOrders(recent);
 });
