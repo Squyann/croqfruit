@@ -17,7 +17,7 @@ python -m http.server 5173
 | Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal ; le formulaire de `contact.html` enregistre les messages en base |
 | Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels** ; fiche produit = maquette |
 | Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
-| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste = maquettes |
+| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; aperçu avec la dernière commande, historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste (nom et téléphone de « Mes informations », export et suppression des données) = maquettes |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
 | Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html`, `commandes.html`, `commande.html`, `livraisons.html` | **fonctionnelles**, réservées au rôle `admin` |
 
@@ -68,7 +68,7 @@ js/cart.js          panier (stocké dans le navigateur)
 js/utils.js         échappement HTML, formats prix / date / créneau / adresse, statuts de commande, messages de page, pastille produit
 js/admin.js         garde des pages admin + envoi / suppression des photos produit
 js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, contact.js, connexion.js, inscription.js,
-  compte.js, compte-commandes.js, compte-commande.js, compte-adresses.js, compte-informations.js   logique par page
+  compte.js, compte-apercu.js, compte-commandes.js, compte-commande.js, compte-adresses.js, compte-informations.js   logique par page
 js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js,
   admin-commandes.js, admin-commande.js, admin-livraisons.js, admin-messages.js            logique des pages admin
 ```

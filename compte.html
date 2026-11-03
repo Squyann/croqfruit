@@ -38,7 +38,9 @@
 
     <section class="panel">
       <h2>Dernière commande</h2>
-      <p class="state-message" style="padding-block:1.5rem"><strong>Aucune commande pour le moment</strong>Vos commandes apparaîtront ici une fois la commande en ligne disponible.</p>
+      <div data-last-order>
+        <p class="state-message" style="padding-block:1.5rem">Chargement…</p>
+      </div>
     </section>
   </div>
 </main>
@@ -47,8 +49,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/compte.js"></script>
+<script src="js/compte-apercu.js"></script>
 </body>
 </html>
