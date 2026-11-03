@@ -36,9 +36,6 @@
       <label class="field">Nom du produit
         <input type="text" name="name" required maxlength="120">
       </label>
-      <label class="field">Description <small>(facultatif)</small>
-        <textarea name="description" maxlength="600"></textarea>
-      </label>
       <div class="field-row">
         <label class="field">Prix (€, TTC)
           <input type="number" name="price" min="0" step="0.01" required>
@@ -53,6 +50,18 @@
           </datalist>
         </label>
       </div>
+      <label class="field">Poids d'une unité, en grammes <small>(facultatif)</small>
+        <input type="number" name="unit_weight_grams" min="1" max="50000" step="1">
+        <small>Pour un produit vendu à la botte, à la pièce, à la barquette… : la boutique affiche alors aussi le prix au kilo. Inutile si l'unité est le kilo.</small>
+      </label>
+      <label class="field">Provenance <small>(facultatif)</small>
+        <input type="text" name="origin" maxlength="80" placeholder="Pays, région ou producteur">
+        <small>S'affiche sur la carte du produit, dans la boutique.</small>
+      </label>
+      <label class="field">Description <small>(facultatif)</small>
+        <textarea name="description" maxlength="600"></textarea>
+        <small>S'affiche dans une petite bulle « i » sur la carte du produit.</small>
+      </label>
       <label class="field">Catégorie <small>(sert aux filtres de la boutique)</small>
         <input type="text" name="category" list="categories" placeholder="Fruits, Légumes…" maxlength="60">
         <datalist id="categories"></datalist>

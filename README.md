@@ -15,7 +15,7 @@ python -m http.server 5173
 | Zone | Pages | État |
 |---|---|---|
 | Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal ; le formulaire de `contact.html` enregistre les messages en base |
-| Achat | `produit.html`, `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels** ; fiche produit = maquette |
+| Achat | `boutique.html` (voir ci-dessus), `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels**. Il n'y a pas de fiche produit : tout est dans la boutique |
 | Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
 | Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; aperçu avec la dernière commande, historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste (nom et téléphone de « Mes informations », export et suppression des données) = maquettes |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
@@ -30,6 +30,7 @@ Un compte devient administrateur quand sa ligne `profiles.role` vaut `admin` (à
 - Un admin voit un lien « Administration » dans l'en-tête et dans son espace client.
 - Les pages `admin/` redirigent vers la connexion si on n'est pas connecté, et affichent « Accès réservé » pour un compte non-admin. **C'est un simple confort d'affichage** : la vraie protection est dans la base (règles RLS, testées) — un non-admin ne peut ni lire les produits masqués, ni la liste des clients, ni écrire quoi que ce soit.
 - Produits : ajout, modification, masquage / mise en vente, suppression, photo (JPG, PNG ou WebP, 3 Mo max) envoyée dans le bucket `product-images`. Un produit masqué (`in_stock = false`) n'apparaît pas dans la boutique.
+  Chaque produit de la boutique affiche sa photo, son prix, sa provenance (facultative) et une petite bulle « i » avec sa description (facultative, la bulle n'apparaît que s'il y en a une). Pour un produit qui n'est pas vendu au kilo (botte, pièce, barquette…), renseigner le **poids d'une unité en grammes** fait afficher aussi le prix au kilo (« soit 6,00 € / kg »).
 - Clients : liste des comptes inscrits (nom, email, date).
 - Commandes : liste filtrable (recherche, statut, jour de livraison), fiche commande avec changement de statut, suivi du règlement et note interne.
 - Livraisons : tournées à venir, zones desservies et créneaux (voir ci-dessous).
@@ -59,7 +60,7 @@ Le formulaire de `contact.html` enregistre chaque message dans la table `contact
 ```
 css/style.css       styles communs (couleurs, typo, en-tête, formulaires, tableaux, pages légales…)
 css/home.css        accueil uniquement
-css/boutique.css    boutique, fiche produit, tiroir panier
+css/boutique.css    boutique (cartes produit, bulle de description), tiroir panier
 css/dashboard.css   espace client et administration
 js/layout.js        en-tête, pied de page et menus (balises <site-header>, <site-footer>, <dash-nav>)
 js/supabase-client.js   connexion Supabase + lecture des produits
@@ -91,7 +92,7 @@ Projet : **CroqFruit** (région UE, Irlande). L'URL et la clé publique (`sb_pub
 
 Tables actuelles :
 
-- `products` — `id`, `name`, `description`, `price`, `unit`, `category`, `image_url`, `in_stock`. Le public ne lit que les produits `in_stock` ; seul un admin peut créer, modifier, supprimer ou voir les produits masqués. Aucun produit n'est codé en dur dans le site.
+- `products` — `id`, `name`, `description`, `price`, `unit`, `unit_weight_grams` (poids d'une unité, pour le prix au kilo), `origin` (provenance), `category`, `image_url`, `in_stock`. Le public ne lit que les produits `in_stock` ; seul un admin peut créer, modifier, supprimer ou voir les produits masqués. Aucun produit n'est codé en dur dans le site.
 - `profiles` — `id` (réf. `auth.users`), `full_name`, `email`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne lit que sa propre ligne, un admin lit toutes les lignes.
 - `delivery_zones` (nom, codes postaux, frais, seuil de gratuité, minimum) et `delivery_slots` (jour, plage horaire, capacité) — lisibles par tous (la page « Livraison » et le formulaire de commande en ont besoin), modifiables par un admin uniquement.
 - `orders` — commande avec coordonnées et adresse recopiées au moment de l'achat, créneau, montants, statut, règlement, note interne. Un client ne lit que ses commandes, un admin les lit toutes et peut les modifier ; **personne ne peut en insérer directement** : tout passe par `place_order`.

@@ -20,16 +20,34 @@ function updateCardControl(productId) {
   if (card) card.innerHTML = renderQtyControl(productId);
 }
 
+// Petite bulle « i » qui affiche la description du produit, s'il y en a une.
+function renderInfoBubble(product) {
+  if (!product.description) return '';
+  const bubbleId = `desc-${product.id}`;
+  return `
+    <span class="info-wrap">
+      <button type="button" class="info-btn" data-info-toggle aria-expanded="false" aria-controls="${escapeHtml(bubbleId)}" aria-label="Description de ${escapeHtml(product.name)}">i</button>
+      <span class="info-bubble" id="${escapeHtml(bubbleId)}" role="note">${escapeHtml(product.description)}</span>
+    </span>`;
+}
+
 function renderProductCard(product) {
+  const perKilo = pricePerKilo(product);
   return `
     <article class="product-card" data-product-id="${product.id}">
       <div class="product-media">${renderMedia(product)}</div>
       <div class="product-body">
         ${product.category ? `<span class="product-category">${escapeHtml(product.category)}</span>` : ''}
-        <h3 class="product-name">${escapeHtml(product.name)}</h3>
-        ${product.description ? `<p class="product-desc">${escapeHtml(product.description)}</p>` : ''}
+        <div class="product-title">
+          <h3 class="product-name">${escapeHtml(product.name)}</h3>
+          ${renderInfoBubble(product)}
+        </div>
+        ${product.origin ? `<p class="product-origin">Provenance : ${escapeHtml(product.origin)}</p>` : ''}
         <div class="product-row">
-          <span class="product-price">${formatPrice(product.price)} <span class="product-unit">/ ${escapeHtml(product.unit)}</span></span>
+          <div class="product-prices">
+            <span class="product-price">${formatPrice(product.price)} <span class="product-unit">/ ${escapeHtml(product.unit)}</span></span>
+            ${perKilo === null ? '' : `<span class="product-price-kilo">soit ${formatPrice(perKilo)} / kg</span>`}
+          </div>
           <div data-qty-control>${renderQtyControl(product.id)}</div>
         </div>
       </div>
@@ -103,6 +121,28 @@ async function loadProducts() {
   renderFilters(categories);
   renderGrid();
 }
+
+// ---------- bulles de description ----------
+// Au survol (souris) ou au clic / toucher ; un clic ailleurs ou Échap referme la bulle ouverte.
+function closeInfoBubbles(except) {
+  document.querySelectorAll('.info-wrap.is-open').forEach((wrap) => {
+    if (wrap === except) return;
+    wrap.classList.remove('is-open');
+    wrap.querySelector('[data-info-toggle]').setAttribute('aria-expanded', 'false');
+  });
+}
+
+document.addEventListener('click', (event) => {
+  const toggle = event.target.closest('[data-info-toggle]');
+  const wrap = toggle?.closest('.info-wrap');
+  closeInfoBubbles(wrap);
+  if (!wrap) return;
+  const open = wrap.classList.toggle('is-open');
+  toggle.setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeInfoBubbles();
+});
 
 // ---------- interactions sur la grille ----------
 document.getElementById('products-grid').addEventListener('click', (event) => {

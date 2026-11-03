@@ -22,6 +22,8 @@ function fillForm(p) {
   form.description.value = p.description ?? '';
   form.price.value = p.price;
   form.unit.value = p.unit;
+  form.unit_weight_grams.value = p.unit_weight_grams ?? '';
+  form.origin.value = p.origin ?? '';
   form.category.value = p.category ?? '';
   form.in_stock.checked = p.in_stock;
   showPreview(p.image_url);
@@ -56,6 +58,12 @@ form.addEventListener('submit', async (event) => {
     setNotice('Renseignez au minimum un nom, un prix et une unité.', true);
     return;
   }
+  const weightRaw = form.unit_weight_grams.value.trim();
+  const weight = weightRaw === '' ? null : Number(weightRaw);
+  if (weight !== null && !(Number.isInteger(weight) && weight >= 1 && weight <= 50000)) {
+    setNotice("Le poids d'une unité doit être un nombre entier de grammes (entre 1 et 50 000).", true);
+    return;
+  }
 
   submitBtn.disabled = true;
   const previousUrl = existing?.image_url ?? null;
@@ -74,6 +82,8 @@ form.addEventListener('submit', async (event) => {
       description: form.description.value.trim() || null,
       price,
       unit: form.unit.value.trim(),
+      unit_weight_grams: weight,
+      origin: form.origin.value.trim() || null,
       category: form.category.value.trim() || null,
       image_url: imageUrl,
       in_stock: form.in_stock.checked,

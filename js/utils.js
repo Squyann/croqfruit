@@ -18,6 +18,13 @@ function formatPrice(value) {
   return Number(value).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
 
+// Prix au kilo d'un produit qui n'est pas vendu au kilo (botte, pièce, barquette…), calculé à partir
+// du poids d'une unité renseigné par l'admin. Renvoie null si le produit se vend au kilo ou si le poids est inconnu.
+function pricePerKilo(product) {
+  if (!product.unit_weight_grams || product.unit.trim().toLowerCase() === 'kg') return null;
+  return (product.price * 1000) / product.unit_weight_grams;
+}
+
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
