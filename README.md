@@ -99,7 +99,7 @@ La page `compte-informations.html` permet au client de modifier son nom et son t
 ## Structure
 
 ```
-css/style.css       styles communs (couleurs, typo, en-tête, formulaires, tableaux, pages légales…)
+css/style.css       styles communs (variables de couleur / arrondis, en-tête, formulaires, tableaux, pages légales…)
 css/home.css        accueil uniquement
 css/boutique.css    boutique (cartes produit, bulle de description), tiroir panier
 css/dashboard.css   espace client et administration
@@ -115,6 +115,10 @@ js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-client
   admin-commandes.js, admin-commande.js, admin-livraisons.js, admin-messages.js            logique des pages admin
 supabase/functions/send-emails/   fonction Edge d'envoi des emails de commande (voir « Emails automatiques »)
 ```
+
+### Apparence
+
+Le design est volontairement simple : fond neutre, un seul accent (le rouge de la marque), coins arrondis, bordures fines, beaucoup d'espace. Il suit automatiquement le mode clair ou sombre de l'appareil. **Pour changer les couleurs, les arrondis ou les ombres, tout se règle dans les variables en haut de `css/style.css`** (bloc `:root`, avec une version pour le mode sombre juste en dessous). Le site utilise la police du système : rien n'est téléchargé chez un tiers pour les polices.
 
 ### Modifier l'en-tête, le pied de page ou la navigation
 

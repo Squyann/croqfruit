@@ -53,7 +53,7 @@ class SiteHeader extends HTMLElement {
     }
 
     const item = (href, label, key) =>
-      `<li><a href="${ROOT}${href}"${key === active ? ' aria-current="page"' : ''}>${label}</a></li>`;
+      `<li><a href="${ROOT}${href}"${key && key === active ? ' aria-current="page"' : ''}>${label}</a></li>`;
 
     this.innerHTML = `
       <header>
@@ -109,7 +109,7 @@ class SiteFooter extends HTMLElement {
       <footer>
         <div class="wrap footer-grid">
           <div>
-            <a class="logo" href="${ROOT}index.html">${logoMark('light')}${LOGO_WORD}</a>
+            <a class="logo" href="${ROOT}index.html">${logoMark()}${LOGO_WORD}</a>
             <p class="footer-tagline">Fruits et légumes sélectionnés par votre primeur auprès de producteurs, livrés chez vous.</p>
             ${contact ? `<div class="footer-col footer-contact">${contact}</div>` : ''}
           </div>
