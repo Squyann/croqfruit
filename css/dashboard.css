@@ -63,6 +63,12 @@ a.tile .tile-value{ font-family: var(--font-display); font-size: 2rem; color: va
 .address-card h3{ display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0; font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; }
 .address-card p{ margin: 0; color: var(--ink-soft); font-family: var(--font-utility); font-size: 0.92rem; overflow-wrap: anywhere; }
 .address-card .row-actions{ justify-content: flex-start; margin-top: auto; padding-top: 0.6rem; }
+.email-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.email-list li{ display: flex; flex-direction: column; gap: 0.2rem; font-family: var(--font-utility); font-size: 0.9rem; overflow-wrap: anywhere; }
+.email-list li > span:first-child{ display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.email-list small{ color: var(--ink-soft); }
+.email-list .email-error{ color: var(--red); }
+.panel > .msg{ margin-top: 0.8rem; color: var(--ink-soft); }
 .message-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
 .message{ border: 1px solid var(--line); background: var(--paper-deep); }
 .message.is-new{ border-left: 3px solid var(--red); }

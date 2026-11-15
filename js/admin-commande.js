@@ -38,6 +38,47 @@ function renderOrder() {
   statusForm.elements.payment.value = order.payment_status;
 }
 
+// ---------- emails automatiques de cette commande ----------
+const EMAIL_KINDS = { order_confirmation: 'Confirmation au client', order_alert: 'Alerte à l’administration' };
+const EMAIL_STATUSES = {
+  pending: { label: 'En attente', badge: 'badge-warn' },
+  sent: { label: 'Envoyé', badge: 'badge-ok' },
+  failed: { label: 'Échec', badge: 'badge-warn' },
+};
+
+async function loadEmails() {
+  const list = document.querySelector('[data-order-emails]');
+  const { data, error } = await supabaseClient
+    .from('email_outbox')
+    .select('kind, to_email, status, last_error, created_at, sent_at')
+    .eq('order_id', order.id)
+    .order('created_at');
+
+  if (error) {
+    console.error('Chargement des emails :', error);
+    list.innerHTML = '<li class="msg">Impossible de charger les emails.</li>';
+    return;
+  }
+  if (data.length === 0) {
+    list.innerHTML = '<li class="msg">Aucun email pour cette commande.</li>';
+    return;
+  }
+
+  list.innerHTML = data
+    .map((email) => {
+      const status = EMAIL_STATUSES[email.status] ?? { label: email.status, badge: '' };
+      const when = email.sent_at ? `Envoyé le ${formatDateTime(email.sent_at)}` : `Créé le ${formatDateTime(email.created_at)}`;
+      return `
+        <li>
+          <span><strong>${escapeHtml(EMAIL_KINDS[email.kind] ?? email.kind)}</strong><span class="badge ${status.badge}">${status.label}</span></span>
+          <small>${escapeHtml(email.to_email)} · ${when}</small>
+          ${email.last_error ? `<small class="email-error">${escapeHtml(email.last_error)}</small>` : ''}
+        </li>`;
+    })
+    .join('');
+  document.querySelector('[data-emails-note]').hidden = !data.some((email) => email.status === 'pending');
+}
+
 // Enregistre des champs de la commande ; renvoie true si la ligne a bien été modifiée.
 async function saveOrder(changes, button) {
   setNotice('');
@@ -85,4 +126,5 @@ adminReady.then(async () => {
   notesForm.elements.notes.value = order.admin_notes ?? '';
   renderOrder();
   document.querySelector('[data-order-content]').hidden = false;
+  loadEmails();
 });

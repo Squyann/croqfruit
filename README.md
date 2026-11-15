@@ -66,6 +66,28 @@ Le client saisit son email dans `mot-de-passe-oublie.html` ; Supabase lui envoie
 
 Il est aussi conseillé de traduire en français le modèle d'email « Reset Password » (*Authentication > Emails > Templates*) et d'y mentionner le nom de la boutique.
 
+## Emails automatiques
+
+À chaque commande, le site envoie deux emails : une **confirmation au client** (livraison, adresse, produits, total) et une **alerte « nouvelle commande »** à chaque compte administrateur. L'envoi passe par **Brevo**. Les emails du formulaire de contact, les suivis de statut et les emails de connexion / mot de passe oublié (qui dépendent de Supabase Auth, voir « Mot de passe oublié ») n'en font pas partie.
+
+**Fonctionnement.** Une commande ne peut jamais échouer à cause d'un email : la base ajoute simplement les deux emails dans une file d'attente (`email_outbox`) puis réveille la fonction Edge `send-emails`, qui les envoie et les marque comme envoyés. Si l'envoi échoue (panne de Brevo, réseau…), il est retenté toutes les 5 minutes, 5 fois au plus ; un email resté en attente plus de 24 h est abandonné. Une clé API ou un expéditeur refusés ne consomment pas de tentative : les emails attendent que le réglage soit corrigé. Les emails de plus de 30 jours sont supprimés chaque nuit. La fiche d'une commande (administration) affiche l'état de ses emails (envoyé, en attente, échec et pourquoi).
+
+La fonction ne contient aucun secret et peut être appelée par n'importe qui sans risque : elle n'envoie que ce qui est déjà dans la file, aux destinataires déjà enregistrés. Tant que Brevo n'est pas configuré, elle ne fait rien et les emails restent en attente (ils partiront tous une fois le réglage fait, sous 24 h).
+
+**Mise en route (à faire une fois, sans passer la clé par le chat ni par le dépôt) :**
+
+1. Créer un compte sur [Brevo](https://www.brevo.com) (offre gratuite).
+2. Ajouter et **vérifier une adresse d'expédition** dans les réglages de Brevo (section « Expéditeurs ») : Brevo envoie un lien de confirmation à cette adresse. Elle apparaîtra comme expéditeur des emails. Une adresse sur le nom de domaine de la boutique, avec les enregistrements d'authentification (SPF, DKIM) que Brevo indique, évite que les emails finissent en courrier indésirable.
+3. Créer une **clé API** (« SMTP & API » > « Clés API ») et la copier : elle n'est affichée qu'une fois. Si vous avez activé la restriction par adresses IP dans Brevo, désactivez-la : les fonctions Supabase n'ont pas d'adresse fixe.
+4. Dans Supabase (*Edge Functions > Secrets*), ajouter :
+   - `BREVO_API_KEY` : la clé API ;
+   - `EMAIL_FROM` : l'adresse d'expédition vérifiée à l'étape 2 ;
+   - `EMAIL_FROM_NAME` (facultatif) : le nom affiché, « CroqFruit » par défaut ;
+   - `SITE_URL` (facultatif) : l'adresse du site en ligne, par exemple `https://mon-domaine.fr`. Sans elle, les emails ne contiennent pas de lien vers la commande.
+5. Passer une commande de test et vérifier sur sa fiche d'administration que les deux emails sont « Envoyés ».
+
+**Fichiers.** Le code est dans `supabase/functions/send-emails/` : `templates.mjs` (modèles des emails, tout ce que saisit un client y est échappé), `sender.mjs` (logique d'envoi et appel à Brevo), `index.ts` (point d'entrée de la fonction Edge) et `test.mjs` (tests : `node supabase/functions/send-emails/test.mjs`). Pour republier la fonction après une modification : `supabase functions deploy send-emails --no-verify-jwt`.
+
 ## Mes informations : coordonnées, export et suppression du compte
 
 La page `compte-informations.html` permet au client de modifier son nom et son téléphone (proposés ensuite automatiquement à la commande), de changer son mot de passe, de télécharger ses données et de supprimer son compte. Ces deux dernières fonctions répondent aux droits d'accès, de portabilité et d'effacement du RGPD.
@@ -91,6 +113,7 @@ js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, con
   compte.js, compte-apercu.js, compte-commandes.js, compte-commande.js, compte-adresses.js, compte-informations.js   logique par page
 js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js,
   admin-commandes.js, admin-commande.js, admin-livraisons.js, admin-messages.js            logique des pages admin
+supabase/functions/send-emails/   fonction Edge d'envoi des emails de commande (voir « Emails automatiques »)
 ```
 
 ### Modifier l'en-tête, le pied de page ou la navigation
@@ -118,12 +141,13 @@ Tables actuelles :
 - `order_items` — lignes d'une commande (nom, unité, prix unitaire et quantité figés à l'achat), visibles avec leur commande.
 - `addresses` — carnet d'adresses d'un client (nom, adresse, instructions pour le livreur, adresse par défaut). Chacun ne voit et ne modifie que les siennes (même pas l'admin : une commande garde sa propre copie de l'adresse). Règles imposées par la base : 10 adresses au maximum, une seule adresse par défaut, la première adresse enregistrée l'est d'office. À la commande, l'adresse par défaut est préremplie et le client peut en choisir une autre ou enregistrer celle qu'il vient de saisir.
 - `contact_messages` — messages du formulaire de contact (nom, email, sujet, message, statut nouveau / lu / traité). **N'importe quel visiteur peut en écrire, seul un admin peut les lire, modifier ou supprimer** ; un visiteur ne peut ni choisir le statut ni écrire au nom d'un autre compte. Un déclencheur limite le volume (voir « Formulaire de contact »).
+- `email_outbox` — file d'attente des emails de commande (type, commande, destinataire, état, dernière erreur). Lisible par les administrateurs seulement ; seuls les déclencheurs de la base et la fonction `send-emails` (rôle service) y écrivent. Un déclencheur sur `orders` la remplit à chaque commande ; deux tâches planifiées (extension `pg_cron`) relancent l'envoi toutes les 5 minutes et purgent les emails de plus de 30 jours. L'extension `pg_net` sert à réveiller la fonction (voir « Emails automatiques »).
 - Stockage : bucket public `product-images` (lecture publique, écriture réservée aux admins).
 - Fonctions : `private.is_admin()` (règles RLS), `private.create_order()` (enregistre la commande) et `private.delivery_availability()` (places restantes par créneau) vivent dans le schéma `private`, non exposé par l'API ; seules les enveloppes `public.place_order()` et `public.get_delivery_availability()` sont appelables, par les comptes connectés. Il en va de même pour `export_my_data()` et `delete_my_account()` (voir « Mes informations »).
 
 Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
 
-À prévoir : paiement en ligne, envoi d'emails automatiques (confirmation de commande, réponse aux messages).
+À prévoir : paiement en ligne, alerte par email des nouveaux messages de contact, suivi de commande par email.
 
 Remarques :
 
