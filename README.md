@@ -118,7 +118,7 @@ supabase/functions/send-emails/   fonction Edge d'envoi des emails de commande (
 
 ### Apparence
 
-Le design est volontairement simple : fond neutre, un seul accent (le rouge de la marque), coins arrondis, bordures fines, beaucoup d'espace. Il suit automatiquement le mode clair ou sombre de l'appareil. **Pour changer les couleurs, les arrondis ou les ombres, tout se règle dans les variables en haut de `css/style.css`** (bloc `:root`, avec une version pour le mode sombre juste en dessous). Le site utilise la police du système : rien n'est téléchargé chez un tiers pour les polices.
+Le design est volontairement simple : fond crème, cartes blanches, un seul accent (un rouge corail), coins arrondis, bordures fines, beaucoup d'espace. Les emails automatiques reprennent les mêmes couleurs (constante `BRAND` et teintes dans `supabase/functions/send-emails/templates.mjs`, à modifier aussi si vous changez la palette). Il suit automatiquement le mode clair ou sombre de l'appareil. **Pour changer les couleurs, les arrondis ou les ombres, tout se règle dans les variables en haut de `css/style.css`** (bloc `:root`, avec une version pour le mode sombre juste en dessous). Le site utilise la police du système : rien n'est téléchargé chez un tiers pour les polices.
 
 ### Modifier l'en-tête, le pied de page ou la navigation
 

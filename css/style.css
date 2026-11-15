@@ -5,31 +5,32 @@
    ========================================================= */
 
 :root{
-  /* Fonds */
-  --paper: #FAFAF9;        /* fond de page */
-  --paper-deep: #F3F1EF;   /* zones calmes : en-têtes de tableau, survols */
+  /* Fonds : crème chaud, cartes blanches */
+  --paper: #FFFBF7;        /* fond de page */
+  --paper-deep: #F8EFE6;   /* zones calmes : en-têtes de tableau, survols, pied de page */
   --surface: #FFFFFF;      /* cartes, champs, tiroirs */
 
   /* Texte */
-  --ink: #1C1917;
-  --ink-soft: #6B645E;
+  --ink: #2B1D16;
+  --ink-soft: #75625A;
 
-  /* Accent (le rouge de la marque) */
-  --red: #A83D2E;          /* texte, liens, icônes */
-  --red-deep: #8A2F23;
-  --red-soft: #F6DDD8;
-  --btn: #A83D2E;          /* fond des boutons pleins */
-  --btn-hover: #8A2F23;
+  /* Accent : corail. Les tons sont légèrement assombris pour que le texte reste lisible
+     (texte blanc sur les boutons, liens sur fond crème). */
+  --red: #C2410C;          /* texte, liens, icônes */
+  --red-deep: #9A3412;
+  --red-soft: #FCE4D8;
+  --btn: #D2441A;          /* fond des boutons pleins */
+  --btn-hover: #B73A14;
   --on-btn: #FFFFFF;
-  --leaf: #3D7A4B;         /* « OK », « en vente » */
+  --leaf: #4A7A40;         /* « OK », « en vente » */
 
   /* Traits et reliefs */
-  --line: #E8E4E0;
-  --line-strong: #D5CFC9;
+  --line: #EDE0D3;
+  --line-strong: #DCCABA;
   --radius: 10px;
   --radius-lg: 16px;
-  --shadow-sm: 0 1px 2px rgb(28 25 23 / 0.06);
-  --shadow-md: 0 10px 30px rgb(28 25 23 / 0.10);
+  --shadow-sm: 0 1px 2px rgb(43 29 22 / 0.06);
+  --shadow-md: 0 10px 30px rgb(43 29 22 / 0.10);
 
   /* Une seule police : celle du système (rapide, rien à télécharger) */
   --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
@@ -49,38 +50,38 @@
 
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper: #121110;
-    --paper-deep: #1B1917;
-    --surface: #1B1917;
-    --ink: #F5F3F0;
-    --ink-soft: #A39C95;
-    --red: #E8836F;
-    --red-deep: #F29A87;
-    --red-soft: #3A211C;
-    --btn: #C24C3B;
-    --btn-hover: #D45E4C;
-    --leaf: #7FB38B;
-    --line: #2B2825;
-    --line-strong: #3C3834;
+    --paper: #17110D;
+    --paper-deep: #1F1712;
+    --surface: #221A14;
+    --ink: #F8EFE7;
+    --ink-soft: #B8A699;
+    --red: #F4896A;
+    --red-deep: #F8A58B;
+    --red-soft: #3C2218;
+    --btn: #D2441A;
+    --btn-hover: #E2552B;
+    --leaf: #8DBB82;
+    --line: #33271F;
+    --line-strong: #473A30;
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
     --shadow-md: 0 10px 30px rgb(0 0 0 / 0.5);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --paper: #121110;
-  --paper-deep: #1B1917;
-  --surface: #1B1917;
-  --ink: #F5F3F0;
-  --ink-soft: #A39C95;
-  --red: #E8836F;
-  --red-deep: #F29A87;
-  --red-soft: #3A211C;
-  --btn: #C24C3B;
-  --btn-hover: #D45E4C;
-  --leaf: #7FB38B;
-  --line: #2B2825;
-  --line-strong: #3C3834;
+  --paper: #17110D;
+  --paper-deep: #1F1712;
+  --surface: #221A14;
+  --ink: #F8EFE7;
+  --ink-soft: #B8A699;
+  --red: #F4896A;
+  --red-deep: #F8A58B;
+  --red-soft: #3C2218;
+  --btn: #D2441A;
+  --btn-hover: #E2552B;
+  --leaf: #8DBB82;
+  --line: #33271F;
+  --line-strong: #473A30;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-md: 0 10px 30px rgb(0 0 0 / 0.5);
   color-scheme: dark;

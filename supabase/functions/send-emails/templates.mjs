@@ -50,15 +50,16 @@ function cleanSiteUrl(siteUrl) {
   return /^https?:\/\/[^\s"'<>]+$/.test(url) ? url : '';
 }
 
-const BRAND = '#A83D2E';
+// Mêmes couleurs que le site (voir css/style.css) : corail sur fond crème.
+const BRAND = '#D2441A';
 
 function itemsHtml(order) {
   const rows = (order.order_items ?? [])
     .map(
       (item) => `
         <tr>
-          <td style="padding:8px 0;border-bottom:1px solid #e8dccd">${escapeHtml(item.product_name)}<br><span style="color:#6b5d52;font-size:13px">${escapeHtml(formatEuros(item.unit_price))} / ${escapeHtml(item.unit)} × ${Number(item.quantity)}</span></td>
-          <td style="padding:8px 0;border-bottom:1px solid #e8dccd;text-align:right;white-space:nowrap">${escapeHtml(formatEuros(item.line_total))}</td>
+          <td style="padding:8px 0;border-bottom:1px solid #EDE0D3">${escapeHtml(item.product_name)}<br><span style="color:#75625A;font-size:13px">${escapeHtml(formatEuros(item.unit_price))} / ${escapeHtml(item.unit)} × ${Number(item.quantity)}</span></td>
+          <td style="padding:8px 0;border-bottom:1px solid #EDE0D3;text-align:right;white-space:nowrap">${escapeHtml(formatEuros(item.line_total))}</td>
         </tr>`
     )
     .join('');
@@ -67,8 +68,8 @@ function itemsHtml(order) {
   return `
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:15px">
         ${rows}
-        <tr><td style="padding:8px 0;color:#6b5d52">Sous-total</td><td style="padding:8px 0;text-align:right">${escapeHtml(formatEuros(order.subtotal))}</td></tr>
-        <tr><td style="padding:8px 0;color:#6b5d52">Livraison</td><td style="padding:8px 0;text-align:right">${escapeHtml(fee)}</td></tr>
+        <tr><td style="padding:8px 0;color:#75625A">Sous-total</td><td style="padding:8px 0;text-align:right">${escapeHtml(formatEuros(order.subtotal))}</td></tr>
+        <tr><td style="padding:8px 0;color:#75625A">Livraison</td><td style="padding:8px 0;text-align:right">${escapeHtml(fee)}</td></tr>
         <tr><td style="padding:10px 0;font-weight:bold;font-size:17px">Total</td><td style="padding:10px 0;text-align:right;font-weight:bold;font-size:17px">${escapeHtml(formatEuros(order.total))}</td></tr>
       </table>`;
 }
@@ -87,7 +88,7 @@ function layout({ title, intro, bodyHtml, linkUrl, linkLabel, footer }) {
     : '';
   return `<!doctype html>
 <html lang="fr">
-<body style="margin:0;padding:24px;background:#f8efe4;font-family:Arial,Helvetica,sans-serif;color:#2a211c">
+<body style="margin:0;padding:24px;background:#FFFBF7;font-family:Arial,Helvetica,sans-serif;color:#2B1D16">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
     <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-top:4px solid ${BRAND}">
       <tr><td style="padding:28px 28px 8px">
@@ -96,7 +97,7 @@ function layout({ title, intro, bodyHtml, linkUrl, linkLabel, footer }) {
         <p style="margin:12px 0 0;font-size:15px;line-height:1.5">${intro}</p>
       </td></tr>
       <tr><td style="padding:8px 28px 28px">${bodyHtml}${button}</td></tr>
-      <tr><td style="padding:16px 28px;background:#f8efe4;font-size:12px;color:#6b5d52;line-height:1.5">${escapeHtml(footer)}</td></tr>
+      <tr><td style="padding:16px 28px;background:#F8EFE6;font-size:12px;color:#75625A;line-height:1.5">${escapeHtml(footer)}</td></tr>
     </table>
   </td></tr></table>
 </body>
@@ -105,7 +106,7 @@ function layout({ title, intro, bodyHtml, linkUrl, linkLabel, footer }) {
 
 function deliveryHtml(order) {
   const notes = order.delivery_notes
-    ? `<br><span style="color:#6b5d52">Instructions : ${escapeHtml(order.delivery_notes)}</span>`
+    ? `<br><span style="color:#75625A">Instructions : ${escapeHtml(order.delivery_notes)}</span>`
     : '';
   return `
       <h2 style="margin:20px 0 6px;font-size:16px">Livraison</h2>
