@@ -24,14 +24,18 @@
         <p class="lede">Indiquez l'email de votre compte : nous vous enverrons un lien pour choisir un nouveau mot de passe.</p>
       </div>
 
-      <p class="callout"><strong>Bientôt disponible.</strong> L'envoi du lien de réinitialisation n'est pas encore activé.</p>
-
-      <form class="form">
+      <form class="form" id="forgot-form">
         <label class="field">Email
-          <input type="email" name="email" required autocomplete="email">
+          <input type="email" name="email" required autocomplete="email" maxlength="254">
         </label>
-        <button type="submit" class="btn btn-primary btn-block" disabled>Envoyer le lien</button>
+        <p class="msg msg-error" data-error hidden></p>
+        <button type="submit" class="btn btn-primary btn-block">Envoyer le lien</button>
       </form>
+
+      <div class="state-message" data-sent hidden>
+        <strong>Vérifiez votre messagerie</strong>
+        Si un compte existe avec cette adresse, un email contenant un lien vient de partir. Pensez à regarder dans vos courriers indésirables. Le lien n'est valable que pour une durée limitée.
+      </div>
 
       <p class="auth-alt"><a href="connexion.html">← Retour à la connexion</a></p>
     </div>
@@ -44,5 +48,6 @@
 <script src="js/supabase-client.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/mot-de-passe-oublie.js"></script>
 </body>
 </html>

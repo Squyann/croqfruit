@@ -75,6 +75,16 @@ const Auth = {
   async updatePassword(password) {
     return supabaseClient.auth.updateUser({ password });
   },
+  // Envoie par email un lien vers reinitialiser-mot-de-passe.html. Cette adresse doit être autorisée dans
+  // Supabase (Authentication > URL Configuration > Redirect URLs), sinon le lien ne ramène pas sur le site.
+  async requestPasswordReset(email) {
+    const redirectTo = new URL('reinitialiser-mot-de-passe.html', window.location.href).href;
+    return supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+  },
+  // Déconnecte les autres appareils (utile après une réinitialisation de mot de passe).
+  async signOutOtherSessions() {
+    return supabaseClient.auth.signOut({ scope: 'others' });
+  },
 };
 
 // Page courante, à passer en `?redirect=` de la page de connexion. On conserve
@@ -120,10 +130,18 @@ const AUTH_ERROR_MESSAGES = {
   'Unable to validate email address: invalid format': 'Adresse email invalide.',
   'New password should be different from the old password.': 'Le nouveau mot de passe doit être différent de l’ancien.',
   'email rate limit exceeded': 'Trop de demandes d’emails en peu de temps. Merci de réessayer dans un moment.',
+  'Auth session missing!': 'Ce lien n’est plus valable. Demandez-en un nouveau.',
 };
 
 function translateAuthError(error) {
   if (!error) return '';
+  // Supabase refuse une nouvelle demande d'email trop rapprochée : « … only request this after 52 seconds ».
+  const wait = /after (\d+) seconds?/.exec(error.message ?? '');
+  if (wait) return `Pour votre sécurité, merci de patienter ${wait[1]} secondes avant de refaire une demande.`;
+  // Sans service d'envoi d'emails (SMTP) configuré, Supabase n'écrit qu'aux membres de l'équipe du projet.
+  if (error.code === 'email_address_not_authorized') {
+    return 'L’envoi d’emails n’est pas encore ouvert à cette adresse. Merci de nous contacter.';
+  }
   const known = AUTH_ERROR_MESSAGES[error.message];
   if (!known) console.error('Erreur Supabase Auth :', error.message);
   return known || 'Une erreur est survenue. Merci de réessayer.';

@@ -16,7 +16,7 @@ python -m http.server 5173
 |---|---|---|
 | Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal ; le formulaire de `contact.html` enregistre les messages en base |
 | Achat | `boutique.html` (voir ci-dessus), `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels**. Il n'y a pas de fiche produit : tout est dans la boutique |
-| Compte | `connexion.html`, `inscription.html` (fonctionnelles), `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` (maquettes) | |
+| Compte | `connexion.html`, `inscription.html`, `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` | fonctionnelles ; le lien de réinitialisation par email demande une configuration de Supabase (voir « Mot de passe oublié ») |
 | Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; aperçu avec la dernière commande, historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste (nom et téléphone de « Mes informations », export et suppression des données) = maquettes |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
 | Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html`, `commandes.html`, `commande.html`, `livraisons.html` | **fonctionnelles**, réservées au rôle `admin` |
@@ -55,6 +55,17 @@ Le formulaire de `contact.html` enregistre chaque message dans la table `contact
 - **Statuts** : En attente → En préparation → En livraison → Livrée (ou Annulée), modifiables par l'admin.
 - **Paiement** : le site n'encaisse rien pour l'instant. Chaque commande a un état de règlement (à régler / payée / remboursée) que l'admin renseigne à la main. Les modalités de paiement sont à définir avec le primeur (zone surlignée dans `commande.html` et `commande-confirmee.html`).
 
+## Mot de passe oublié
+
+Le client saisit son email dans `mot-de-passe-oublie.html` ; Supabase lui envoie un lien qui ouvre `reinitialiser-mot-de-passe.html`, où il choisit un nouveau mot de passe (8 caractères minimum). Le message affiché est le même que le compte existe ou non, pour ne pas révéler quelles adresses ont un compte. Après la réinitialisation, le client est connecté et ses autres appareils sont déconnectés. Un lien expiré, déjà utilisé ou ouvert directement affiche « Ce lien n'est plus valable » avec un bouton pour en demander un nouveau.
+
+**Deux réglages sont nécessaires dans Supabase, sinon aucun client ne recevra ni ne pourra utiliser le lien :**
+
+1. **Service d'envoi d'emails (SMTP).** Tant qu'aucun SMTP n'est configuré (*Authentication > Emails > SMTP Settings*), Supabase n'écrit qu'aux membres de l'équipe du projet et en très petit nombre par heure ; le service intégré n'est pas prévu pour la production. Les autres adresses reçoivent l'erreur « L'envoi d'emails n'est pas encore ouvert à cette adresse ». Il faut un service d'envoi (par exemple Resend, Brevo ou Postmark) et une adresse d'expédition au nom de la boutique.
+2. **Adresses de redirection autorisées** (*Authentication > URL Configuration*). Renseigner **Site URL** avec l'adresse du site en ligne, et ajouter dans **Redirect URLs** `https://<votre-domaine>/reinitialiser-mot-de-passe.html` (et `http://localhost:5173/reinitialiser-mot-de-passe.html` pour les essais en local). Sans cela, le lien ramène sur l'adresse par défaut de Supabase et non sur le site.
+
+Il est aussi conseillé de traduire en français le modèle d'email « Reset Password » (*Authentication > Emails > Templates*) et d'y mentionner le nom de la boutique.
+
 ## Structure
 
 ```
@@ -64,11 +75,11 @@ css/boutique.css    boutique (cartes produit, bulle de description), tiroir pani
 css/dashboard.css   espace client et administration
 js/layout.js        en-tête, pied de page et menus (balises <site-header>, <site-footer>, <dash-nav>)
 js/supabase-client.js   connexion Supabase + lecture des produits
-js/auth.js          état de connexion partagé, déconnexion, messages d'erreur
+js/auth.js          état de connexion partagé, déconnexion, réinitialisation du mot de passe, messages d'erreur
 js/cart.js          panier (stocké dans le navigateur)
 js/utils.js         échappement HTML, formats prix / date / créneau / adresse, statuts de commande, messages de page, pastille produit
 js/admin.js         garde des pages admin + envoi / suppression des photos produit
-js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, contact.js, connexion.js, inscription.js,
+js/boutique.js, panier.js, commande.js, commande-confirmee.js, livraison.js, contact.js, connexion.js, inscription.js, mot-de-passe-oublie.js, reinitialiser-mot-de-passe.js,
   compte.js, compte-apercu.js, compte-commandes.js, compte-commande.js, compte-adresses.js, compte-informations.js   logique par page
 js/admin-dashboard.js, admin-produits.js, admin-produit-edition.js, admin-clients.js,
   admin-commandes.js, admin-commande.js, admin-livraisons.js, admin-messages.js            logique des pages admin
@@ -109,4 +120,4 @@ Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par S
 Remarques :
 
 - Un projet Supabase gratuit se met en pause après une période d'inactivité ; il faut alors le réveiller depuis le tableau de bord (ou passer à une offre payante pour un site en production).
-- Les emails de confirmation d'inscription sont soumis à une limite d'envoi sur l'offre gratuite ; un service d'envoi dédié (SMTP) lève cette limite.
+- Les emails de confirmation d'inscription et de réinitialisation de mot de passe sont soumis à une limite d'envoi sur l'offre gratuite, et ne partent qu'à l'équipe du projet tant qu'aucun service d'envoi (SMTP) n'est configuré (voir « Mot de passe oublié »).
