@@ -17,7 +17,7 @@ python -m http.server 5173
 | Vitrine | `index.html`, `boutique.html`, `livraison.html`, `a-propos.html`, `contact.html`, `faq.html`, `404.html` | contenu écrit ; textes à compléter signalés ; `livraison.html` affiche zones, créneaux et frais lus en base et vérifie le code postal ; le formulaire de `contact.html` enregistre les messages en base |
 | Achat | `boutique.html` (voir ci-dessus), `panier.html`, `commande.html`, `commande-confirmee.html` | panier, commande et confirmation **fonctionnels**. Il n'y a pas de fiche produit : tout est dans la boutique |
 | Compte | `connexion.html`, `inscription.html`, `mot-de-passe-oublie.html`, `reinitialiser-mot-de-passe.html` | fonctionnelles ; le lien de réinitialisation par email demande une configuration de Supabase (voir « Mot de passe oublié ») |
-| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; aperçu avec la dernière commande, historique et détail des commandes, carnet d'adresses, changement de mot de passe fonctionnels ; le reste (nom et téléphone de « Mes informations », export et suppression des données) = maquettes |
+| Espace client | `compte.html`, `compte-commandes.html`, `compte-commande.html`, `compte-informations.html`, `compte-adresses.html` | protégé côté navigateur (redirige vers la connexion) ; entièrement fonctionnel : aperçu avec la dernière commande, historique et détail des commandes, carnet d'adresses, « Mes informations » (coordonnées, mot de passe, export des données, suppression du compte) |
 | Légal | `cgv.html`, `mentions-legales.html`, `politique-confidentialite.html`, `cookies.html` | modèles à compléter et à faire valider |
 | Administration | `admin/index.html`, `produits.html`, `produit-edition.html`, `clients.html`, `commandes.html`, `commande.html`, `livraisons.html` | **fonctionnelles**, réservées au rôle `admin` |
 
@@ -66,6 +66,14 @@ Le client saisit son email dans `mot-de-passe-oublie.html` ; Supabase lui envoie
 
 Il est aussi conseillé de traduire en français le modèle d'email « Reset Password » (*Authentication > Emails > Templates*) et d'y mentionner le nom de la boutique.
 
+## Mes informations : coordonnées, export et suppression du compte
+
+La page `compte-informations.html` permet au client de modifier son nom et son téléphone (proposés ensuite automatiquement à la commande), de changer son mot de passe, de télécharger ses données et de supprimer son compte. Ces deux dernières fonctions répondent aux droits d'accès, de portabilité et d'effacement du RGPD.
+
+- **Export** : un fichier JSON généré à la demande par la fonction `export_my_data` de la base, avec le compte (email, date de création), le profil, les adresses enregistrées, les commandes (avec leurs lignes) et les messages envoyés par le formulaire de contact (ceux rattachés au compte et ceux envoyés avec la même adresse email). **Il ne contient pas les notes internes de l'administration** (champ `admin_notes` des commandes) ni le statut de traitement des messages : à confirmer avec votre conseil juridique, car le droit d'accès peut s'étendre aux notes qui concernent le client.
+- **Suppression** : le client doit ressaisir son mot de passe. La fonction `delete_my_account` efface le compte, le profil, les adresses enregistrées et les messages de contact (rattachés au compte ou envoyés avec la même adresse email). **Les commandes passées sont conservées**, sans lien avec un compte, car elles servent de pièces comptables (10 ans, voir la politique de confidentialité) ; elles gardent le nom, l'adresse et le téléphone saisis à l'époque.
+- **Garde-fous** : la suppression est refusée tant qu'une commande est en cours (en attente, en préparation ou en livraison), et pour un compte administrateur (pour ne pas se retrouver sans administrateur).
+
 ## Structure
 
 ```
@@ -104,14 +112,14 @@ Projet : **CroqFruit** (région UE, Irlande). L'URL et la clé publique (`sb_pub
 Tables actuelles :
 
 - `products` — `id`, `name`, `description`, `price`, `unit`, `unit_weight_grams` (poids d'une unité, pour le prix au kilo), `origin` (provenance), `category`, `image_url`, `in_stock`. Le public ne lit que les produits `in_stock` ; seul un admin peut créer, modifier, supprimer ou voir les produits masqués. Aucun produit n'est codé en dur dans le site.
-- `profiles` — `id` (réf. `auth.users`), `full_name`, `email`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne lit que sa propre ligne, un admin lit toutes les lignes.
+- `profiles` — `id` (réf. `auth.users`), `full_name`, `phone`, `email`, `role` (`customer` par défaut, `admin` à positionner en base), `created_at`. Remplie automatiquement à l'inscription par un déclencheur ; un client ne lit que sa propre ligne, un admin lit toutes les lignes. Un client ne peut modifier que `full_name` et `phone` (droits limités à ces deux colonnes) : ni son rôle, ni son email.
 - `delivery_zones` (nom, codes postaux, frais, seuil de gratuité, minimum) et `delivery_slots` (jour, plage horaire, capacité) — lisibles par tous (la page « Livraison » et le formulaire de commande en ont besoin), modifiables par un admin uniquement.
 - `orders` — commande avec coordonnées et adresse recopiées au moment de l'achat, créneau, montants, statut, règlement, note interne. Un client ne lit que ses commandes, un admin les lit toutes et peut les modifier ; **personne ne peut en insérer directement** : tout passe par `place_order`.
 - `order_items` — lignes d'une commande (nom, unité, prix unitaire et quantité figés à l'achat), visibles avec leur commande.
 - `addresses` — carnet d'adresses d'un client (nom, adresse, instructions pour le livreur, adresse par défaut). Chacun ne voit et ne modifie que les siennes (même pas l'admin : une commande garde sa propre copie de l'adresse). Règles imposées par la base : 10 adresses au maximum, une seule adresse par défaut, la première adresse enregistrée l'est d'office. À la commande, l'adresse par défaut est préremplie et le client peut en choisir une autre ou enregistrer celle qu'il vient de saisir.
 - `contact_messages` — messages du formulaire de contact (nom, email, sujet, message, statut nouveau / lu / traité). **N'importe quel visiteur peut en écrire, seul un admin peut les lire, modifier ou supprimer** ; un visiteur ne peut ni choisir le statut ni écrire au nom d'un autre compte. Un déclencheur limite le volume (voir « Formulaire de contact »).
 - Stockage : bucket public `product-images` (lecture publique, écriture réservée aux admins).
-- Fonctions : `private.is_admin()` (règles RLS), `private.create_order()` (enregistre la commande) et `private.delivery_availability()` (places restantes par créneau) vivent dans le schéma `private`, non exposé par l'API ; seules les enveloppes `public.place_order()` et `public.get_delivery_availability()` sont appelables, par les comptes connectés.
+- Fonctions : `private.is_admin()` (règles RLS), `private.create_order()` (enregistre la commande) et `private.delivery_availability()` (places restantes par créneau) vivent dans le schéma `private`, non exposé par l'API ; seules les enveloppes `public.place_order()` et `public.get_delivery_availability()` sont appelables, par les comptes connectés. Il en va de même pour `export_my_data()` et `delete_my_account()` (voir « Mes informations »).
 
 Les comptes eux-mêmes (email, mot de passe haché, sessions) sont gérés par Supabase Authentication.
 

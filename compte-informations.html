@@ -28,21 +28,23 @@
       </div>
     </div>
 
-    <p class="callout"><strong>En cours de construction.</strong> Le changement de mot de passe est actif ; l'enregistrement des coordonnées et l'export ou la suppression des données seront activés prochainement.</p>
-
     <section class="panel">
       <h2>Coordonnées</h2>
-      <form class="form">
+      <form class="form" id="profile-form">
         <label class="field">Nom complet
-          <input type="text" name="fullName" autocomplete="name" data-user-fullname-input>
+          <input type="text" name="fullName" autocomplete="name" minlength="2" maxlength="100" required>
         </label>
         <label class="field">Email
           <input type="email" name="email" autocomplete="email" readonly data-user-email>
+          <small>L'adresse email sert à vous connecter ; elle ne peut pas être modifiée ici.</small>
         </label>
-        <label class="field">Téléphone
-          <input type="tel" name="phone" autocomplete="tel" placeholder="Pour vous joindre le jour de la livraison">
+        <label class="field">Téléphone <small>(facultatif)</small>
+          <input type="tel" name="phone" autocomplete="tel" maxlength="30" pattern="[0-9 +\(\)\.\-]{6,30}" placeholder="Pour vous joindre le jour de la livraison">
+          <small>Proposé automatiquement à la commande.</small>
         </label>
-        <div class="form-actions"><button type="submit" class="btn btn-primary" disabled>Enregistrer</button></div>
+        <p class="msg msg-error" data-error hidden></p>
+        <p class="msg msg-ok" data-success hidden></p>
+        <div class="form-actions"><button type="submit" class="btn btn-primary">Enregistrer</button></div>
       </form>
     </section>
 
@@ -64,10 +66,39 @@
 
     <section class="panel">
       <h2>Mes données personnelles</h2>
-      <p>Conformément au RGPD, vous pouvez obtenir une copie de vos données ou supprimer votre compte. Plus d'informations dans notre <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
+      <p>Conformément au RGPD, vous pouvez obtenir une copie de vos données : coordonnées, adresses enregistrées, commandes et messages envoyés par le formulaire de contact. Plus d'informations dans notre <a href="politique-confidentialite.html">politique de confidentialité</a>.</p>
       <div class="form-actions" style="margin-top:1rem">
-        <button type="button" class="btn btn-ghost" disabled>Exporter mes données</button>
-        <button type="button" class="btn btn-ghost" disabled>Supprimer mon compte</button>
+        <button type="button" class="btn btn-ghost" id="export-btn">Exporter mes données</button>
+      </div>
+      <p class="msg msg-error" data-export-error hidden></p>
+    </section>
+
+    <section class="panel panel-danger">
+      <h2>Supprimer mon compte</h2>
+
+      <div data-delete-intro>
+        <p>La suppression est définitive. Elle efface votre compte, vos coordonnées, vos adresses enregistrées et les messages que vous nous avez envoyés. Vos commandes passées sont conservées sans lien avec un compte, pendant la durée exigée par les obligations comptables.</p>
+        <div class="form-actions" style="margin-top:1rem">
+          <button type="button" class="btn btn-ghost" id="delete-open">Supprimer mon compte…</button>
+        </div>
+      </div>
+
+      <form class="form" id="delete-form" hidden>
+        <p><strong>Cette action est irréversible.</strong> Pour confirmer, saisissez votre mot de passe.</p>
+        <label class="field">Mot de passe
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <p class="msg msg-error" data-error hidden></p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Supprimer définitivement mon compte</button>
+          <button type="button" class="btn btn-ghost" id="delete-cancel">Annuler</button>
+        </div>
+      </form>
+
+      <div class="state-message" data-delete-done hidden>
+        <strong>Votre compte a été supprimé</strong>
+        Merci d'avoir commandé chez CroqFruit.<br>
+        <a class="btn btn-primary" href="index.html">Retour à l'accueil</a>
       </div>
     </section>
   </div>
@@ -77,6 +108,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/compte.js"></script>

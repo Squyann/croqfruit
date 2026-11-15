@@ -33,7 +33,7 @@ async function initAuth() {
   });
 }
 
-// Profil (nom, email, rôle) de l'utilisateur connecté, lu une seule fois par page.
+// Profil (nom, email, téléphone, rôle) de l'utilisateur connecté, lu une seule fois par page.
 let profileCache = { userId: null, promise: null };
 
 const Auth = {
@@ -47,7 +47,7 @@ const Auth = {
         userId: currentUser.id,
         promise: supabaseClient
           .from('profiles')
-          .select('full_name, email, role')
+          .select('full_name, email, phone, role')
           .eq('id', currentUser.id)
           .maybeSingle()
           .then(({ data }) => data ?? null, () => null),
@@ -74,6 +74,19 @@ const Auth = {
   },
   async updatePassword(password) {
     return supabaseClient.auth.updateUser({ password });
+  },
+  // Enregistre le nom et le téléphone. Le nom est aussi copié dans les métadonnées du compte,
+  // d'où les pages le lisent pour afficher « Bonjour … » ; renvoie { error } comme les autres méthodes.
+  async updateProfile({ fullName, phone }) {
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .update({ full_name: fullName, phone })
+      .eq('id', currentUser.id)
+      .select('id');
+    if (error || !data?.length) return { error: error ?? new Error('Aucune ligne modifiée') };
+
+    profileCache = { userId: null, promise: null };
+    return supabaseClient.auth.updateUser({ data: { full_name: fullName } });
   },
   // Envoie par email un lien vers reinitialiser-mot-de-passe.html. Cette adresse doit être autorisée dans
   // Supabase (Authentication > URL Configuration > Redirect URLs), sinon le lien ne ramène pas sur le site.

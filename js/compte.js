@@ -3,6 +3,8 @@
 // (Simple confort d'affichage : la vraie protection des données vient des règles RLS.)
 Auth.subscribe((user) => {
   if (!user) {
+    // Après la suppression de son compte, la page affiche un message d'au revoir au lieu de rediriger.
+    if (window.accountDeleted) return;
     window.location.replace(`connexion.html?redirect=${encodeURIComponent(pageForRedirect())}`);
     return;
   }

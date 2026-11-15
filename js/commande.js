@@ -198,7 +198,7 @@ function showSyncNotice({ removed, repriced }) {
 }
 
 async function init(user) {
-  const [syncResult, zonesResult, availabilityLoaded, lastOrder, addressesResult] = await Promise.all([
+  const [syncResult, zonesResult, availabilityLoaded, lastOrder, addressesResult, profile] = await Promise.all([
     Cart.syncWithCatalog(),
     supabaseClient.from('delivery_zones').select('*').order('created_at'),
     loadAvailability(),
@@ -210,6 +210,7 @@ async function init(user) {
       .limit(1)
       .maybeSingle(),
     supabaseClient.from('addresses').select('*').order('is_default', { ascending: false }).order('created_at'),
+    Auth.getProfile(),
   ]);
 
   showSyncNotice(syncResult);
@@ -218,13 +219,13 @@ async function init(user) {
   savedAddresses = addressesResult.data ?? [];
   renderSavedAddresses();
 
-  // Prérempli : nom et téléphone de la dernière commande ; adresse par défaut du carnet,
-  // à défaut l'adresse de la dernière commande.
+  // Prérempli : nom et téléphone du profil, à défaut ceux de la dernière commande ;
+  // adresse par défaut du carnet, à défaut l'adresse de la dernière commande.
   const last = lastOrder.data;
-  if (last) {
-    fields.fullName.value = last.customer_name;
-    fields.phone.value = last.customer_phone;
-  }
+  const knownName = profile?.full_name || last?.customer_name;
+  const knownPhone = profile?.phone || last?.customer_phone;
+  if (knownName) fields.fullName.value = knownName;
+  if (knownPhone) fields.phone.value = knownPhone;
   const preferred = savedAddresses.find((a) => a.is_default);
   if (preferred) {
     fields.savedAddress.value = preferred.id;
